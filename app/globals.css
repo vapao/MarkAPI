@@ -69,10 +69,10 @@
   --surface: #121a1f;
   --surface-soft: #172126;
   --surface-raised: #1a252b;
-  --text: #e5edf0;
-  --text-strong: #f2f7f8;
-  --markdown-text: #c7d4d9;
-  --muted: #91a2aa;
+  --text: #d6e0e4;
+  --text-strong: #e1e9ec;
+  --markdown-text: #b8c7cd;
+  --muted: #879aa3;
   --border: #2b3a42;
   --border-strong: #42545e;
   --accent: #4fc3b7;
@@ -89,7 +89,7 @@
   --dropzone-border: #3a6b66;
   --dropzone-bg: linear-gradient(180deg, #14282a 0%, #121d21 100%);
   --dropzone-bg-hover: #162f30;
-  --toc-text: #cad8dc;
+  --toc-text: #b8c8ce;
   --highlight-bg: #5a4a18;
   --highlight-active-bg: #80641c;
   --highlight-ring: rgb(204 157 46 / 28%);
@@ -97,12 +97,12 @@
   --changelog-heading-border: #295752;
   --changelog-bg: linear-gradient(180deg, #142826 0%, #121a1f 100%);
   --code-bg: #0a0f13;
-  --code-text: #d4ece8;
+  --code-text: #c4ddd8;
   --inline-code-bg: #1d2a30;
   --copy-popover-border: rgb(136 222 213 / 28%);
   --copy-popover-bg: rgb(7 22 23 / 94%);
   --copy-popover-text: #c8fff8;
-  --json-text: #d5e3e7;
+  --json-text: #c5d5da;
   --json-field: #7ee0d4;
   --json-field-hover: #b9fff7;
   --json-field-bg: rgb(126 224 212 / 16%);
