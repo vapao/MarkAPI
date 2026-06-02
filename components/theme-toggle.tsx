@@ -1,15 +1,17 @@
 "use client";
 
+import { Monitor, Moon, Sun } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useSyncExternalStore } from "react";
 
 type ThemeChoice = "system" | "light" | "dark";
 
 const STORAGE_KEY = "markapi:theme";
 const THEME_CHANGE_EVENT = "markapi:theme-change";
-const THEME_OPTIONS: { label: string; title: string; value: ThemeChoice }[] = [
-  { label: "系", title: "跟随系统", value: "system" },
-  { label: "亮", title: "浅色模式", value: "light" },
-  { label: "暗", title: "深色模式", value: "dark" }
+const THEME_OPTIONS: { Icon: LucideIcon; label: string; value: ThemeChoice }[] = [
+  { Icon: Monitor, label: "跟随系统", value: "system" },
+  { Icon: Sun, label: "浅色模式", value: "light" },
+  { Icon: Moon, label: "深色模式", value: "dark" }
 ];
 
 function isThemeChoice(value: string | null): value is ThemeChoice {
@@ -78,18 +80,23 @@ export function ThemeToggle() {
 
   return (
     <div className="theme-toggle" role="group" aria-label="外观主题">
-      {THEME_OPTIONS.map((option) => (
-        <button
-          aria-pressed={choice === option.value}
-          className={choice === option.value ? "theme-toggle-button theme-toggle-button-active" : "theme-toggle-button"}
-          key={option.value}
-          title={option.title}
-          type="button"
-          onClick={() => updateChoice(option.value)}
-        >
-          {option.label}
-        </button>
-      ))}
+      {THEME_OPTIONS.map((option) => {
+        const Icon = option.Icon;
+
+        return (
+          <button
+            aria-label={option.label}
+            aria-pressed={choice === option.value}
+            className={choice === option.value ? "theme-toggle-button theme-toggle-button-active" : "theme-toggle-button"}
+            key={option.value}
+            title={option.label}
+            type="button"
+            onClick={() => updateChoice(option.value)}
+          >
+            <Icon aria-hidden="true" size={15} strokeWidth={2.25} />
+          </button>
+        );
+      })}
     </div>
   );
 }
