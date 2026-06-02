@@ -4,11 +4,33 @@ import { useEffect, useState } from "react";
 import type { TocItem } from "@/lib/markdown";
 
 type DocsTocProps = {
+  collapsible?: boolean;
   items: TocItem[];
 };
 
-export function DocsToc({ items }: DocsTocProps) {
+export function DocsToc({ collapsible = false, items }: DocsTocProps) {
   const [activeId, setActiveId] = useState(items[0]?.id ?? "");
+  const [isCompact, setIsCompact] = useState(false);
+  const [expandedParentId, setExpandedParentId] = useState("");
+
+  const itemsWithParent = items.map((item) => {
+    return {
+      ...item,
+      parentId: item.depth === 1 ? item.id : findParentId(items, item.id)
+    };
+  });
+  const activeItem = itemsWithParent.find((item) => item.id === activeId);
+  const activeVisibleId =
+    isCompact && activeItem?.depth === 2 ? activeItem.parentId : activeId;
+  const hasNestedItems = items.some((item) => item.depth === 2);
+  const showToggle = collapsible && hasNestedItems;
+  const visibleItems = itemsWithParent.filter((item) => {
+    if (!isCompact || item.depth === 1) {
+      return true;
+    }
+
+    return item.parentId === expandedParentId;
+  });
 
   useEffect(() => {
     if (items.length === 0) {
@@ -57,33 +79,88 @@ export function DocsToc({ items }: DocsTocProps) {
     };
   }, [items]);
 
+  function handleToggleCompact() {
+    if (isCompact) {
+      setIsCompact(false);
+      return;
+    }
+
+    setExpandedParentId("");
+    setIsCompact(true);
+  }
+
   if (items.length === 0) {
-    return <p className="empty-text">当前文档没有二级或三级标题。</p>;
+    return (
+      <>
+        {collapsible ? (
+          <div className="toc-heading">
+            <h2>目录</h2>
+          </div>
+        ) : null}
+        <p className="empty-text">当前文档没有二级或三级标题。</p>
+      </>
+    );
   }
 
   return (
-    <nav aria-label="目录" className="toc-list">
-      {items.map((item) => {
-        const className = [
-          "toc-item",
-          item.depth === 2 ? "toc-item-nested" : "",
-          item.id === activeId ? "toc-item-active" : ""
-        ]
-          .filter(Boolean)
-          .join(" ");
+    <>
+      {collapsible ? (
+        <div className="toc-heading">
+          <h2>目录</h2>
+          {showToggle ? (
+            <button
+              aria-label={isCompact ? "展开全部二级目录" : "只显示一级目录"}
+              className={`toc-toggle${isCompact ? " toc-toggle-active" : ""}`}
+              title={isCompact ? "展开全部二级目录" : "只显示一级目录"}
+              type="button"
+              onClick={handleToggleCompact}
+            >
+              <span aria-hidden="true" className="toc-toggle-mark" />
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+      <nav aria-label="目录" className="toc-list">
+        {visibleItems.map((item) => {
+          const className = [
+            "toc-item",
+            item.depth === 2 ? "toc-item-nested" : "",
+            item.id === activeVisibleId ? "toc-item-active" : ""
+          ]
+            .filter(Boolean)
+            .join(" ");
 
-        return (
-          <a
-            aria-current={item.id === activeId ? "location" : undefined}
-            className={className}
-            href={`#${item.id}`}
-            key={item.id}
-            onClick={() => setActiveId(item.id)}
-          >
-            {item.text}
-          </a>
-        );
-      })}
-    </nav>
+          return (
+            <a
+              aria-current={item.id === activeVisibleId ? "location" : undefined}
+              className={className}
+              href={`#${item.id}`}
+              key={item.id}
+              onClick={() => {
+                setActiveId(item.id);
+
+                if (isCompact && item.depth === 1) {
+                  setExpandedParentId(item.id);
+                }
+              }}
+            >
+              {item.text}
+            </a>
+          );
+        })}
+      </nav>
+    </>
   );
+}
+
+function findParentId(items: TocItem[], itemId: string) {
+  const itemIndex = items.findIndex((item) => item.id === itemId);
+
+  for (let index = itemIndex; index >= 0; index -= 1) {
+    if (items[index]?.depth === 1) {
+      return items[index].id;
+    }
+  }
+
+  return "";
 }

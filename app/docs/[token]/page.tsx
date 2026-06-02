@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { DocsToc } from "@/components/docs-toc";
 import { DocsProjectSwitcher } from "@/components/docs-project-switcher";
+import { DocsSearch } from "@/components/docs-search";
 import { MarkdownBody } from "@/components/markdown-body";
 import { VersionSelect } from "@/components/version-select";
 import { formatDateTime } from "@/lib/format";
@@ -43,11 +44,8 @@ export default async function DocsPage({ params, searchParams }: DocsPageProps) 
   return (
     <div className="docs-page">
       <header className="docs-header">
-        <div>
+        <div className="docs-title">
           <p>Dmark</p>
-          <h1>{project.name}</h1>
-        </div>
-        <div className="docs-header-controls">
           <DocsProjectSwitcher
             key={project.shareToken}
             currentProject={{
@@ -55,6 +53,9 @@ export default async function DocsPage({ params, searchParams }: DocsPageProps) 
               name: project.name
             }}
           />
+        </div>
+        {currentVersion ? <DocsSearch key={`search-${currentVersion.id}`} /> : null}
+        <div className="docs-header-controls">
           {currentVersion ? (
             <VersionSelect
               key={currentVersion.id}
@@ -79,8 +80,7 @@ export default async function DocsPage({ params, searchParams }: DocsPageProps) 
           </div>
           <div className="docs-shell">
             <aside className="docs-sidebar">
-              <h2>目录</h2>
-              <DocsToc items={extractToc(currentVersion.content)} />
+              <DocsToc collapsible items={extractToc(currentVersion.content)} />
             </aside>
             <main className="docs-content">
               <div className="docs-meta">版本：{formatDateTime(currentVersion.createdAt)}</div>

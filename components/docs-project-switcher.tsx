@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useSyncExternalStore, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 const STORAGE_KEY = "dmark:visited-projects";
@@ -87,7 +87,7 @@ function rememberProject(project: DocsProjectSwitcherProps["currentProject"]) {
   window.dispatchEvent(new Event(STORAGE_EVENT));
 }
 
-function rememberOnlyProject(project: DocsProjectSwitcherProps["currentProject"]) {
+function forgetProject(token: string) {
   const storage = getLocalStorage();
 
   if (!storage) {
@@ -96,13 +96,7 @@ function rememberOnlyProject(project: DocsProjectSwitcherProps["currentProject"]
 
   storage.setItem(
     STORAGE_KEY,
-    JSON.stringify([
-      {
-        token: project.token,
-        name: project.name,
-        lastOpenedAt: Date.now()
-      }
-    ])
+    JSON.stringify(parseProjectsSnapshot(getProjectsSnapshot()).filter((project) => project.token !== token))
   );
   window.dispatchEvent(new Event(STORAGE_EVENT));
 }
@@ -110,8 +104,11 @@ function rememberOnlyProject(project: DocsProjectSwitcherProps["currentProject"]
 export function DocsProjectSwitcher({ currentProject }: DocsProjectSwitcherProps) {
   const { name, token } = currentProject;
   const router = useRouter();
+  const switcherRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [pendingToken, setPendingToken] = useState<string | null>(null);
+  const [confirmingToken, setConfirmingToken] = useState<string | null>(null);
   const projectsSnapshot = useSyncExternalStore(
     subscribeProjects,
     getProjectsSnapshot,
@@ -139,52 +136,127 @@ export function DocsProjectSwitcher({ currentProject }: DocsProjectSwitcherProps
     rememberProject({ name, token });
   }, [name, token]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    function handlePointerDown(event: PointerEvent) {
+      if (!switcherRef.current?.contains(event.target as Node)) {
+        setIsOpen(false);
+        setConfirmingToken(null);
+      }
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+        setConfirmingToken(null);
+      }
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
+
   return (
-    <div className="project-select">
-      <label className="project-select-field">
-        <span>项目</span>
-        <span className="project-select-control">
-          <select
-            aria-busy={isLoading}
-            value={selectedToken}
-            onChange={(event) => {
-              const nextToken = event.target.value;
-
-              if (nextToken === token) {
-                setPendingToken(null);
-                return;
-              }
-
-              setPendingToken(nextToken);
-              startTransition(() => {
-                router.push(`/docs/${nextToken}`);
-              });
-            }}
-          >
-            {projects.map((project) => (
-              <option key={project.token} value={project.token}>
-                {project.name}
-              </option>
-            ))}
-          </select>
-        </span>
-      </label>
+    <div className="project-switcher" ref={switcherRef}>
+      <button
+        aria-busy={isLoading}
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        className="project-switcher-trigger"
+        type="button"
+        onClick={() => {
+          setIsOpen((value) => !value);
+          setConfirmingToken(null);
+        }}
+      >
+        <span className="project-switcher-name">{name}</span>
+        <span aria-hidden="true" className="project-switcher-caret" />
+      </button>
       {isLoading ? (
-        <span className="project-select-status" role="status" aria-live="polite">
+        <span className="project-switcher-status" role="status" aria-live="polite">
           打开中
         </span>
       ) : null}
-      {projects.length > 1 ? (
-        <button
-          className="project-clear-button"
-          type="button"
-          onClick={() => {
-            setPendingToken(null);
-            rememberOnlyProject({ name, token });
-          }}
-        >
-          清除记录
-        </button>
+      {isOpen ? (
+        <div className="project-switcher-menu" aria-label="切换项目">
+          {projects.map((project) => {
+            const isCurrent = project.token === selectedToken;
+            const isConfirming = confirmingToken === project.token;
+
+            return (
+              <div className="project-switcher-item" key={project.token}>
+                {isConfirming ? (
+                  <div className="project-delete-confirm" role="group" aria-label={`删除 ${project.name} 的访问记录`}>
+                    <span>删除这条访问记录？</span>
+                    <button
+                      className="project-delete-cancel"
+                      type="button"
+                      onClick={() => setConfirmingToken(null)}
+                    >
+                      取消
+                    </button>
+                    <button
+                      className="project-delete-confirm-button"
+                      type="button"
+                      onClick={() => {
+                        setPendingToken(null);
+                        setConfirmingToken(null);
+                        forgetProject(project.token);
+                      }}
+                    >
+                      删除
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <button
+                      className="project-switcher-option"
+                      disabled={isCurrent}
+                      type="button"
+                      onClick={() => {
+                        if (project.token === token) {
+                          setPendingToken(null);
+                          setIsOpen(false);
+                          return;
+                        }
+
+                        setPendingToken(project.token);
+                        setIsOpen(false);
+                        startTransition(() => {
+                          router.push(`/docs/${project.token}`);
+                        });
+                      }}
+                    >
+                      <span aria-hidden="true" className="project-switcher-check">
+                        {isCurrent ? "✓" : ""}
+                      </span>
+                      <span className="project-switcher-option-name">{project.name}</span>
+                    </button>
+                    {project.token === token ? (
+                      <span className="project-switcher-current">当前</span>
+                    ) : (
+                      <button
+                        className="project-delete-button"
+                        type="button"
+                        onClick={() => setConfirmingToken(project.token)}
+                      >
+                        删除
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            );
+          })}
+        </div>
       ) : null}
     </div>
   );
