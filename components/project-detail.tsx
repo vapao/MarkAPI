@@ -2,6 +2,7 @@ import type { DocumentVersion, Project } from "@prisma/client";
 import Link from "next/link";
 import { uploadVersionAction } from "@/app/admin/actions";
 import { CopyLinkButton } from "@/components/copy-link-button";
+import { MarkdownFileField } from "@/components/markdown-file-field";
 import { formatDateTime } from "@/lib/format";
 
 type ProjectDetailProps = {
@@ -41,11 +42,8 @@ export function ProjectDetail({ project, shareUrl, error }: ProjectDetailProps) 
       <section className="panel" id="upload">
         <h2>上传新版本</h2>
         {error ? <p className="form-error">{error}</p> : null}
-        <form className="stack-form" action={uploadAction} encType="multipart/form-data">
-          <label>
-            <span>Markdown 文件</span>
-            <input required type="file" name="file" accept=".md,text/markdown" />
-          </label>
+        <form className="stack-form" action={uploadAction}>
+          <MarkdownFileField />
           <label>
             <span>版本备注</span>
             <textarea name="note" rows={4} placeholder="本次更新的后台备注，可留空" />

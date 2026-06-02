@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { DocsToc } from "@/components/docs-toc";
+import { DocsProjectSwitcher } from "@/components/docs-project-switcher";
 import { MarkdownBody } from "@/components/markdown-body";
 import { VersionSelect } from "@/components/version-select";
 import { formatDateTime } from "@/lib/format";
@@ -46,16 +47,26 @@ export default async function DocsPage({ params, searchParams }: DocsPageProps) 
           <p>Dmark</p>
           <h1>{project.name}</h1>
         </div>
-        {currentVersion ? (
-          <VersionSelect
-            currentVersionId={currentVersion.id}
-            token={project.shareToken}
-            versions={project.versions.map((item) => ({
-              id: item.id,
-              label: formatDateTime(item.createdAt)
-            }))}
+        <div className="docs-header-controls">
+          <DocsProjectSwitcher
+            key={project.shareToken}
+            currentProject={{
+              token: project.shareToken,
+              name: project.name
+            }}
           />
-        ) : null}
+          {currentVersion ? (
+            <VersionSelect
+              key={currentVersion.id}
+              currentVersionId={currentVersion.id}
+              token={project.shareToken}
+              versions={project.versions.map((item) => ({
+                id: item.id,
+                label: formatDateTime(item.createdAt)
+              }))}
+            />
+          ) : null}
+        </div>
       </header>
 
       {currentVersion ? (

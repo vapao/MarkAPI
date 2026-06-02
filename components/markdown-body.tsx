@@ -4,6 +4,8 @@ import GithubSlugger from "github-slugger";
 import ReactMarkdown from "react-markdown";
 import rehypeSanitize from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
+import { CopyableText } from "@/components/copyable-text";
+import { JsonCodeBlock } from "@/components/json-code-block";
 import { splitMarkdownSections } from "@/lib/markdown";
 
 type MarkdownBodyProps = {
@@ -28,6 +30,66 @@ function nodeText(children: ReactNode): string {
   return "";
 }
 
+function codeLanguage(children: ReactNode) {
+  if (children && typeof children === "object" && "props" in children) {
+    const props = children.props as { className?: string };
+
+    return props.className?.match(/language-(\w+)/)?.[1];
+  }
+
+  return undefined;
+}
+
+const NON_COPYABLE_TABLE_VALUES = new Set([
+  "array",
+  "boolean",
+  "double",
+  "false",
+  "float",
+  "integer",
+  "null",
+  "number",
+  "object",
+  "string",
+  "true"
+]);
+
+function endpointParts(text: string) {
+  return text.trim().match(/^(GET|POST|PUT|PATCH|DELETE)\s+(\/\S+)$/);
+}
+
+function isCopyableTableValue(value: string) {
+  const text = value.trim();
+
+  if (!text || text.length > 80 || /\s/.test(text) || NON_COPYABLE_TABLE_VALUES.has(text.toLowerCase())) {
+    return false;
+  }
+
+  return (
+    /^[A-Z][A-Z0-9_]*$/.test(text) ||
+    /^[a-z][a-zA-Z0-9_]*(?:\[\])?(?:\.[a-zA-Z0-9_]+(?:\[\])?)*$/.test(text) ||
+    /^\/[A-Za-z0-9_./{}:-]+\/?$/.test(text)
+  );
+}
+
+function copyableTrailingToken(children: ReactNode, label: string) {
+  const text = nodeText(children);
+  const match = text.match(/^(.+\s)([a-z][a-zA-Z0-9_]*(?:\[\])?(?:\.[a-zA-Z0-9_]+(?:\[\])?)*)$/);
+
+  if (!match || !isCopyableTableValue(match[2])) {
+    return children;
+  }
+
+  return (
+    <>
+      {match[1]}
+      <CopyableText className="copy-token heading-copy-token" label={label} value={match[2]}>
+        {match[2]}
+      </CopyableText>
+    </>
+  );
+}
+
 export function MarkdownBody({ content }: MarkdownBodyProps) {
   const slugger = new GithubSlugger();
   const components: Components = {
@@ -43,19 +105,62 @@ export function MarkdownBody({ content }: MarkdownBodyProps) {
     ),
     h3: ({ children, ...props }) => (
       <h3 {...props} id={slugger.slug(nodeText(children))}>
-        {children}
+        {copyableTrailingToken(children, "复制字段名")}
       </h3>
     ),
     h4: ({ children, ...props }) => (
       <h4 {...props} id={slugger.slug(nodeText(children))}>
-        {children}
+        {copyableTrailingToken(children, "复制字段名")}
       </h4>
     ),
+    p: ({ children, ...props }) => {
+      const text = nodeText(children);
+      const match = endpointParts(text);
+
+      if (match) {
+        const [, method, path] = match;
+
+        return (
+          <p {...props} className="endpoint-line">
+            <span className="endpoint-method">{method}</span>{" "}
+            <CopyableText className="copy-token endpoint-path" label="复制接口 URL" value={path}>
+              {path}
+            </CopyableText>
+          </p>
+        );
+      }
+
+      return <p {...props}>{children}</p>;
+    },
+    pre: ({ children, ...props }) => {
+      const code = nodeText(children).replace(/\n$/, "");
+
+      if (codeLanguage(children) === "json") {
+        return <JsonCodeBlock code={code} />;
+      }
+
+      return <pre {...props}>{children}</pre>;
+    },
     table: ({ children, ...props }) => (
       <div className="markdown-table-wrap">
         <table {...props}>{children}</table>
       </div>
-    )
+    ),
+    td: ({ children, ...props }) => {
+      const text = nodeText(children);
+
+      return (
+        <td {...props}>
+          {isCopyableTableValue(text) ? (
+            <CopyableText label="复制文本" value={text.trim()}>
+              {children}
+            </CopyableText>
+          ) : (
+            children
+          )}
+        </td>
+      );
+    }
   };
 
   return (

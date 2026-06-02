@@ -29,10 +29,10 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family:
-    Arial,
+    "Courier New",
     "PingFang SC",
     "Microsoft YaHei",
-    sans-serif;
+    monospace;
 }
 
 a {
@@ -228,6 +228,7 @@ textarea:focus {
 
 .panel,
 .project-row {
+  min-width: 0;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
@@ -302,6 +303,106 @@ textarea:focus {
   display: grid;
   gap: 16px;
   margin-top: 16px;
+}
+
+.file-field {
+  position: relative;
+}
+
+.file-field-label {
+  color: var(--text);
+}
+
+.file-dropzone {
+  display: flex;
+  min-height: 82px;
+  align-items: center;
+  gap: 14px;
+  border: 1px dashed #a9c7c4;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #fbfefe 0%, #f3fbfa 100%);
+  cursor: pointer;
+  padding: 14px;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.file-dropzone:hover,
+.file-field:focus-within .file-dropzone {
+  border-color: var(--accent);
+  background: #f5fcfb;
+}
+
+.file-field:focus-within .file-dropzone {
+  box-shadow: 0 0 0 3px rgb(8 127 122 / 14%);
+}
+
+.file-mark {
+  display: inline-grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.file-copy {
+  display: grid;
+  min-width: 0;
+  flex: 1 1 auto;
+  gap: 4px;
+}
+
+.file-title {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-hint {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.file-action {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border: 1px solid #9acbc7;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+.file-input {
+  position: absolute;
+  width: 1px;
+  min-height: 0;
+  height: 1px;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  overflow: hidden;
+  padding: 0;
+  white-space: nowrap;
 }
 
 .form-error {
@@ -380,18 +481,142 @@ textarea:focus {
   line-height: 1.3;
 }
 
+.docs-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.project-select,
 .version-select {
   display: flex;
   min-width: 260px;
   align-items: center;
+  flex-shrink: 0;
   gap: 8px;
   color: var(--muted);
   font-size: 13px;
   font-weight: 600;
 }
 
+.project-select {
+  min-width: 320px;
+}
+
+.project-select-field {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  flex: 1 1 auto;
+  gap: 8px;
+}
+
+.project-select-field > span:first-child,
+.version-select > span:first-child {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.project-select select,
 .version-select select {
+  appearance: none;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  width: 100%;
+  flex: 1 1 auto;
   min-height: 36px;
+  border-color: #b8d7d4;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  padding-right: 34px;
+}
+
+.project-select-control,
+.version-select-control {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #ffffff 0%, #f3fbfa 100%);
+}
+
+.project-select-control::after,
+.version-select-control::after {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  content: "";
+  pointer-events: none;
+  transform: translateY(-65%) rotate(45deg);
+}
+
+.project-select-control:hover select,
+.version-select-control:hover select {
+  border-color: var(--accent);
+}
+
+.project-select-control:focus-within,
+.version-select-control:focus-within {
+  box-shadow: 0 0 0 3px rgb(8 127 122 / 14%);
+}
+
+.project-select-control:focus-within select,
+.version-select-control:focus-within select {
+  border-color: var(--accent);
+  box-shadow: none;
+}
+
+.project-select-status,
+.version-select-status {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.project-select-status::before,
+.version-select-status::before {
+  width: 10px;
+  height: 10px;
+  border: 2px solid rgb(8 127 122 / 20%);
+  border-top-color: var(--accent);
+  border-radius: 999px;
+  content: "";
+  animation: version-loading-spin 720ms linear infinite;
+}
+
+.project-clear-button {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 0;
+}
+
+.project-clear-button:hover,
+.project-clear-button:focus-visible {
+  color: var(--accent);
+  outline: none;
+}
+
+@keyframes version-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .docs-shell {
@@ -434,6 +659,14 @@ textarea:focus {
   border-left-color: var(--accent);
   background: var(--accent-soft);
   color: var(--accent-strong);
+}
+
+.toc-item-active,
+.toc-item-active:hover {
+  border-left-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 700;
 }
 
 .toc-item-nested {
@@ -571,7 +804,7 @@ textarea:focus {
   border-radius: 4px;
   background: #eef3f6;
   padding: 2px 5px;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-family: "Courier New", "PingFang SC", "Microsoft YaHei", monospace;
   font-size: 0.92em;
 }
 
@@ -579,6 +812,151 @@ textarea:focus {
   background: transparent;
   padding: 0;
   color: inherit;
+}
+
+.endpoint-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.endpoint-method {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.endpoint-path {
+  font-family: "Courier New", "PingFang SC", "Microsoft YaHei", monospace;
+}
+
+.copy-token {
+  position: relative;
+  display: inline-block;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--accent-strong);
+  cursor: pointer;
+  font: inherit;
+  padding: 0 2px;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.copy-token:hover,
+.copy-token:focus-visible,
+.copy-token-copied {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  outline: none;
+}
+
+.json-code-block {
+  color: #d7e2e8;
+}
+
+.json-field-name {
+  position: relative;
+  display: inline-block;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #76e4d4;
+  cursor: pointer;
+  font: inherit;
+  padding: 0 2px;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.json-field-name:hover,
+.json-field-name:focus-visible,
+.json-field-name-copied {
+  background: rgb(118 228 212 / 14%);
+  color: #a7fff2;
+  outline: none;
+}
+
+.json-field-name-copied {
+  animation: json-field-copy-settle 650ms ease-out;
+}
+
+.json-field-name-copied::after,
+.copy-token-copied::after {
+  position: absolute;
+  z-index: 1;
+  top: 1px;
+  left: 100%;
+  display: inline-grid;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  place-items: center;
+  border: 1px solid rgb(167 255 242 / 30%);
+  border-radius: 999px;
+  background: rgb(15 51 49 / 94%);
+  color: #b8fff5;
+  content: "✓";
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(5px, -35%);
+  white-space: nowrap;
+  animation: json-field-copy-label 650ms ease-out forwards;
+}
+
+@keyframes json-field-copy-settle {
+  0% {
+    background: rgb(118 228 212 / 22%);
+    color: #d8fff9;
+  }
+
+  100% {
+    background: rgb(118 228 212 / 14%);
+    color: #a7fff2;
+  }
+}
+
+@keyframes json-field-copy-label {
+  0% {
+    opacity: 0;
+    transform: translate(3px, -35%) scale(0.95);
+  }
+
+  18%,
+  72% {
+    opacity: 1;
+    transform: translate(5px, -35%) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(5px, -35%) scale(1);
+  }
+}
+
+.json-string {
+  color: #f0c674;
+}
+
+.json-number {
+  color: #8ab4f8;
+}
+
+.json-boolean {
+  color: #c8a2ff;
+}
+
+.json-null {
+  color: #ff9b9b;
+}
+
+.json-punctuation {
+  color: #9eb1ba;
 }
 
 .markdown-body blockquote {
@@ -622,6 +1000,12 @@ textarea:focus {
     padding: 14px 16px;
   }
 
+  .docs-header-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .project-select,
   .version-select {
     width: 100%;
     min-width: 0;

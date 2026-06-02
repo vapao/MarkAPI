@@ -2,7 +2,7 @@ import GithubSlugger from "github-slugger";
 
 export type TocItem = {
   id: string;
-  level: 2 | 3;
+  depth: 1 | 2;
   text: string;
 };
 
@@ -11,8 +11,9 @@ export type MarkdownSection = {
   highlight: boolean;
 };
 
-const HEADING_PATTERN = /^(#{1,6})\s+(.+?)\s*#*\s*$/;
-const FENCE_PATTERN = /^\s*(```|~~~)/;
+const HEADING_PATTERN = /^ {0,3}(#{1,6})[ \t]+(.+?)(?:[ \t]+#+)?[ \t]*$/;
+const SECTION_HEADING_PATTERN = /^ {0,3}##[ \t]+(.+?)(?:[ \t]+#+)?[ \t]*$/;
+const FENCE_PATTERN = /^ {0,3}(```|~~~)/;
 
 export function plainHeadingText(value: string) {
   return value
@@ -49,8 +50,10 @@ export function extractToc(content: string) {
     const text = plainHeadingText(match[2]);
     const id = slugger.slug(text);
 
-    if (level === 2 || level === 3) {
-      toc.push({ id, level, text });
+    if (level === 2) {
+      toc.push({ id, depth: 1, text });
+    } else if (level === 3) {
+      toc.push({ id, depth: 2, text });
     }
   }
 
@@ -68,7 +71,7 @@ export function splitMarkdownSections(content: string) {
       inFence = !inFence;
     }
 
-    const match = inFence ? null : line.match(/^##\s+(.+?)\s*#*\s*$/);
+    const match = inFence ? null : line.match(SECTION_HEADING_PATTERN);
 
     if (match && lines.length > 0) {
       sections.push({ content: lines.join("\n"), highlight });
