@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { TocItem } from "@/lib/markdown";
 
 type DocsTocProps = {
@@ -9,6 +9,7 @@ type DocsTocProps = {
 };
 
 export function DocsToc({ collapsible = false, items }: DocsTocProps) {
+  const tocNavRef = useRef<HTMLElement>(null);
   const [activeId, setActiveId] = useState(items[0]?.id ?? "");
   const [isCompact, setIsCompact] = useState(false);
   const [expandedParentId, setExpandedParentId] = useState("");
@@ -21,7 +22,9 @@ export function DocsToc({ collapsible = false, items }: DocsTocProps) {
   });
   const activeItem = itemsWithParent.find((item) => item.id === activeId);
   const activeVisibleId =
-    isCompact && activeItem?.depth === 2 ? activeItem.parentId : activeId;
+    isCompact && activeItem?.depth === 2 && activeItem.parentId !== expandedParentId
+      ? activeItem.parentId
+      : activeId;
   const hasNestedItems = items.some((item) => item.depth === 2);
   const showToggle = collapsible && hasNestedItems;
   const visibleItems = itemsWithParent.filter((item) => {
@@ -79,6 +82,29 @@ export function DocsToc({ collapsible = false, items }: DocsTocProps) {
     };
   }, [items]);
 
+  useEffect(() => {
+    if (!collapsible) {
+      return;
+    }
+
+    const activeItemElement = tocNavRef.current?.querySelector<HTMLElement>(".toc-item-active");
+    const sidebar = activeItemElement?.closest<HTMLElement>(".docs-sidebar");
+
+    if (!activeItemElement || !sidebar) {
+      return;
+    }
+
+    const sidebarRect = sidebar.getBoundingClientRect();
+    const activeRect = activeItemElement.getBoundingClientRect();
+    const edgePadding = 16;
+
+    if (activeRect.top < sidebarRect.top + edgePadding) {
+      sidebar.scrollTop += activeRect.top - sidebarRect.top - edgePadding;
+    } else if (activeRect.bottom > sidebarRect.bottom - edgePadding) {
+      sidebar.scrollTop += activeRect.bottom - sidebarRect.bottom + edgePadding;
+    }
+  }, [activeVisibleId, collapsible, expandedParentId, isCompact]);
+
   function handleToggleCompact() {
     if (isCompact) {
       setIsCompact(false);
@@ -120,7 +146,7 @@ export function DocsToc({ collapsible = false, items }: DocsTocProps) {
           ) : null}
         </div>
       ) : null}
-      <nav aria-label="目录" className="toc-list">
+      <nav aria-label="目录" className="toc-list" ref={tocNavRef}>
         {visibleItems.map((item) => {
           const className = [
             "toc-item",
