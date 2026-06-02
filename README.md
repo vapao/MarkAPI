@@ -36,7 +36,10 @@ NODE_ENV=production
 ADMIN_PASSWORD=strong-password
 SESSION_SECRET=random-long-secret
 DATABASE_URL=file:../data/dmark.db
+ALLOW_INSECURE_ADMIN_COOKIE=0
 ```
+
+如果生产环境必须通过 HTTP 访问，设置 `ALLOW_INSECURE_ADMIN_COOKIE=1`。这会让管理员登录 Cookie 在 HTTP 下可用，但登录凭证会通过明文连接传输，建议只在可信内网或临时环境使用。
 
 把 `data/` 目录放在持久化磁盘上，并定期备份 SQLite 数据库。
 

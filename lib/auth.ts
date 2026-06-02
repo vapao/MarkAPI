@@ -24,6 +24,13 @@ function getSessionSecret() {
   return secret;
 }
 
+function shouldUseSecureCookie() {
+  return (
+    process.env.NODE_ENV === "production" &&
+    process.env.ALLOW_INSECURE_ADMIN_COOKIE !== "1"
+  );
+}
+
 function sign(payload: string) {
   return crypto
     .createHmac("sha256", getSessionSecret())
@@ -89,7 +96,7 @@ export async function setAdminSession() {
 
   cookieStore.set(COOKIE_NAME, createSessionValue(), {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: shouldUseSecureCookie(),
     sameSite: "lax",
     path: "/admin",
     maxAge: SESSION_MAX_AGE_SECONDS
@@ -101,7 +108,7 @@ export async function clearAdminSession() {
 
   cookieStore.set(COOKIE_NAME, "", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: shouldUseSecureCookie(),
     sameSite: "lax",
     path: "/admin",
     maxAge: 0
