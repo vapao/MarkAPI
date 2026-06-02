@@ -31,7 +31,7 @@ export default async function NewProjectPage({ searchParams }: NewProjectPagePro
           <form className="stack-form" action={createProjectAction}>
             <label>
               <span>项目名称</span>
-              <input required type="text" name="name" placeholder="例如：智霖小程序端 API 文档" />
+              <input required type="text" name="name" placeholder="例如：支付服务 API 文档" />
             </label>
             <div>
               <button className="button button-primary" type="submit">
