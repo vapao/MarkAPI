@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { loginAction } from "@/app/admin/actions";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { isAdminAuthenticated } from "@/lib/auth";
 
 type LoginPageProps = {
@@ -18,9 +19,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   return (
     <main className="login-page">
       <form className="login-card" action={loginAction}>
-        <div>
-          <h1>MarkAPI</h1>
-          <p>Markdown API 文档管理</p>
+        <div className="login-card-header">
+          <div>
+            <h1>MarkAPI</h1>
+            <p>Markdown API 文档管理</p>
+          </div>
+          <ThemeToggle />
         </div>
         {error ? <p className="form-error">{error}</p> : null}
         <label>

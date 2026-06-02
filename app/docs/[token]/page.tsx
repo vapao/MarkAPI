@@ -3,6 +3,7 @@ import { DocsToc } from "@/components/docs-toc";
 import { DocsProjectSwitcher } from "@/components/docs-project-switcher";
 import { DocsSearch } from "@/components/docs-search";
 import { MarkdownBody } from "@/components/markdown-body";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { VersionSelect } from "@/components/version-select";
 import { formatDateTime } from "@/lib/format";
 import { extractToc } from "@/lib/markdown";
@@ -67,6 +68,7 @@ export default async function DocsPage({ params, searchParams }: DocsPageProps) 
               }))}
             />
           ) : null}
+          <ThemeToggle />
         </div>
       </header>
 
