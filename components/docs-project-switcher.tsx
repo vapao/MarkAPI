@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-const STORAGE_KEY = "dmark:visited-projects";
-const STORAGE_EVENT = "dmark:visited-projects-change";
+const STORAGE_KEY = "markapi:visited-projects";
+const STORAGE_EVENT = "markapi:visited-projects-change";
 
 type StoredProject = {
   token: string;

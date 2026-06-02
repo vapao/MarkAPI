@@ -19,7 +19,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     <main className="login-page">
       <form className="login-card" action={loginAction}>
         <div>
-          <h1>Dmark</h1>
+          <h1>MarkAPI</h1>
           <p>Markdown API 文档管理</p>
         </div>
         {error ? <p className="form-error">{error}</p> : null}

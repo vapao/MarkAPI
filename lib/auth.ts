@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-const COOKIE_NAME = "dmark_admin_session";
+const COOKIE_NAME = "markapi_admin_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
 
 type SessionPayload = {

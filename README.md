@@ -1,6 +1,27 @@
-# Dmark
+# MarkAPI
 
-内部 Markdown API 文档浏览器。第一版只包含单管理员密码、项目管理、Markdown 上传、历史版本和不可猜分享链接。
+自托管 Markdown API 文档浏览器。第一版只包含单管理员密码、项目管理、Markdown 上传、历史版本和不可猜分享链接。
+
+## 快速开始
+
+```bash
+cp .env.example .env
+docker compose up -d
+```
+
+启动前请先编辑 `.env`，至少设置 `ADMIN_PASSWORD` 和 `SESSION_SECRET`。默认服务地址是 `http://localhost:3000`。
+
+如果直接通过 HTTP 访问管理后台，保留：
+
+```env
+ALLOW_INSECURE_ADMIN_COOKIE=1
+```
+
+正式部署到 HTTPS 后，改回：
+
+```env
+ALLOW_INSECURE_ADMIN_COOKIE=0
+```
 
 ## 本地运行
 
@@ -14,11 +35,11 @@ npm run dev
 
 ```env
 ADMIN_PASSWORD=local-test-password
-SESSION_SECRET=local-dev-session-secret-for-dmark
-DATABASE_URL=file:../data/dmark.db
+SESSION_SECRET=local-dev-session-secret-for-markapi
+DATABASE_URL=file:../data/markapi.db
 ```
 
-`DATABASE_URL` 使用 `file:../data/dmark.db` 是因为 Prisma 的 SQLite 相对路径按 `prisma/schema.prisma` 所在目录解析。
+`DATABASE_URL` 使用 `file:../data/markapi.db` 是因为 Prisma 的 SQLite 相对路径按 `prisma/schema.prisma` 所在目录解析。
 
 ## 生产部署
 
@@ -35,31 +56,10 @@ npm start
 NODE_ENV=production
 ADMIN_PASSWORD=strong-password
 SESSION_SECRET=random-long-secret
-DATABASE_URL=file:../data/dmark.db
+DATABASE_URL=file:../data/markapi.db
 ALLOW_INSECURE_ADMIN_COOKIE=0
 ```
 
 如果生产环境必须通过 HTTP 访问，设置 `ALLOW_INSECURE_ADMIN_COOKIE=1`。这会让管理员登录 Cookie 在 HTTP 下可用，但登录凭证会通过明文连接传输，建议只在可信内网或临时环境使用。
 
 把 `data/` 目录放在持久化磁盘上，并定期备份 SQLite 数据库。
-
-## 同步源码到服务器
-
-```bash
-scripts/sync-to-server.sh root@example.com
-scripts/sync-to-server.sh deploy@example.com /data/dmark
-```
-
-默认同步到服务器的 `/data/dmark`。脚本会排除 `.env`、`node_modules/`、`.next/` 和本地 SQLite 数据库。
-
-需要指定 SSH 端口或密钥时：
-
-```bash
-SSH_OPTS="-p 2222 -i ~/.ssh/id_ed25519" scripts/sync-to-server.sh deploy@example.com
-```
-
-预览同步内容：
-
-```bash
-DRY_RUN=1 scripts/sync-to-server.sh deploy@example.com
-```

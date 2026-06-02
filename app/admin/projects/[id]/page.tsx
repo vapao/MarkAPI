@@ -41,7 +41,7 @@ export default async function ProjectPage({ params, searchParams }: ProjectPageP
 
   return (
     <div className="admin-page">
-      <AdminHeader title={`Dmark / ${project.name}`} />
+      <AdminHeader title={`MarkAPI / ${project.name}`} />
       <ProjectDetail project={project} shareUrl={await getShareUrl(project.shareToken)} error={error} />
     </div>
   );

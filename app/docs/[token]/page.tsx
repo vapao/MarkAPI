@@ -45,7 +45,7 @@ export default async function DocsPage({ params, searchParams }: DocsPageProps) 
     <div className="docs-page">
       <header className="docs-header">
         <div className="docs-title">
-          <p>Dmark</p>
+          <p>MarkAPI</p>
           <DocsProjectSwitcher
             key={project.shareToken}
             currentProject={{

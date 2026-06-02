@@ -6,12 +6,12 @@ type AdminHeaderProps = {
   action?: React.ReactNode;
 };
 
-export function AdminHeader({ title = "Dmark", action }: AdminHeaderProps) {
+export function AdminHeader({ title = "MarkAPI", action }: AdminHeaderProps) {
   return (
     <header className="admin-header">
       <div>
         <Link className="brand" href="/admin/projects">
-          <span className="brand-mark">D</span>
+          <span className="brand-mark">M</span>
           <span>{title}</span>
         </Link>
       </div>

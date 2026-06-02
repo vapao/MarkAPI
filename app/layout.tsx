@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Dmark",
+  title: "MarkAPI",
   description: "内部 Markdown API 文档浏览器"
 };
 

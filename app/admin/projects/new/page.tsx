@@ -17,7 +17,7 @@ export default async function NewProjectPage({ searchParams }: NewProjectPagePro
   return (
     <div className="admin-page">
       <AdminHeader
-        title="Dmark / 新建项目"
+        title="MarkAPI / 新建项目"
         action={
           <Link className="button button-ghost" href="/admin/projects">
             返回项目列表
