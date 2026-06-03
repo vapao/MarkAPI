@@ -19,6 +19,7 @@ export function DocsToc({ collapsible = false, items, labels }: DocsTocProps) {
   const [activeId, setActiveId] = useState(items[0]?.id ?? "");
   const [isCompact, setIsCompact] = useState(false);
   const [expandedParentId, setExpandedParentId] = useState("");
+  const [isSidebarScrolled, setIsSidebarScrolled] = useState(false);
 
   const itemsWithParent = items.map((item) => {
     return {
@@ -40,6 +41,7 @@ export function DocsToc({ collapsible = false, items, labels }: DocsTocProps) {
 
     return item.parentId === expandedParentId;
   });
+  const tocHeadingClassName = `toc-heading${isSidebarScrolled ? " toc-heading-scrolled" : ""}`;
 
   useEffect(() => {
     if (items.length === 0) {
@@ -102,14 +104,43 @@ export function DocsToc({ collapsible = false, items, labels }: DocsTocProps) {
 
     const sidebarRect = sidebar.getBoundingClientRect();
     const activeRect = activeItemElement.getBoundingClientRect();
+    const heading = sidebar.querySelector<HTMLElement>(".toc-heading");
     const edgePadding = 16;
+    const topEdge = sidebarRect.top + (heading?.offsetHeight ?? 0) + edgePadding;
+    const bottomEdge = sidebarRect.bottom - edgePadding;
 
-    if (activeRect.top < sidebarRect.top + edgePadding) {
-      sidebar.scrollTop += activeRect.top - sidebarRect.top - edgePadding;
-    } else if (activeRect.bottom > sidebarRect.bottom - edgePadding) {
-      sidebar.scrollTop += activeRect.bottom - sidebarRect.bottom + edgePadding;
+    if (activeRect.top < topEdge) {
+      sidebar.scrollTop += activeRect.top - topEdge;
+    } else if (activeRect.bottom > bottomEdge) {
+      sidebar.scrollTop += activeRect.bottom - bottomEdge;
     }
+
+    setIsSidebarScrolled(sidebar.scrollTop > 0);
   }, [activeVisibleId, collapsible, expandedParentId, isCompact]);
+
+  useEffect(() => {
+    if (!collapsible) {
+      return;
+    }
+
+    const sidebar = tocNavRef.current?.closest<HTMLElement>(".docs-sidebar");
+
+    if (!sidebar) {
+      setIsSidebarScrolled(false);
+      return;
+    }
+
+    const updateScrolledState = () => {
+      setIsSidebarScrolled(sidebar.scrollTop > 0);
+    };
+
+    sidebar.addEventListener("scroll", updateScrolledState, { passive: true });
+    updateScrolledState();
+
+    return () => {
+      sidebar.removeEventListener("scroll", updateScrolledState);
+    };
+  }, [collapsible, visibleItems.length]);
 
   function handleToggleCompact() {
     if (isCompact) {
@@ -125,7 +156,7 @@ export function DocsToc({ collapsible = false, items, labels }: DocsTocProps) {
     return (
       <>
         {collapsible ? (
-          <div className="toc-heading">
+          <div className={tocHeadingClassName}>
             <h2>{labels.title}</h2>
           </div>
         ) : null}
@@ -137,7 +168,7 @@ export function DocsToc({ collapsible = false, items, labels }: DocsTocProps) {
   return (
     <>
       {collapsible ? (
-        <div className="toc-heading">
+        <div className={tocHeadingClassName}>
           <h2>{labels.title}</h2>
           {showToggle ? (
             <button

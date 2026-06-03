@@ -1333,9 +1333,10 @@ textarea:focus {
 }
 
 .docs-shell {
+  --docs-sidebar-width: 260px;
   display: grid;
   height: calc(100dvh - 65px);
-  grid-template-columns: 260px minmax(0, 1fr);
+  grid-template-columns: var(--docs-sidebar-width) 8px minmax(0, 1fr);
 }
 
 .docs-sidebar {
@@ -1343,9 +1344,8 @@ textarea:focus {
   top: 65px;
   height: calc(100dvh - 65px);
   overflow-y: auto;
-  border-right: 1px solid var(--border);
   background: var(--surface-soft);
-  padding: 24px 20px;
+  padding: 0;
 }
 
 .docs-sidebar h2 {
@@ -1359,6 +1359,66 @@ textarea:focus {
   justify-content: space-between;
   gap: 8px;
   margin-bottom: 14px;
+}
+
+.docs-sidebar .toc-heading {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  margin: 0;
+  border-bottom: 1px solid transparent;
+  background: var(--surface-soft);
+  padding: 24px 20px 14px;
+  transition: border-color 120ms ease;
+}
+
+.docs-sidebar .toc-heading-scrolled {
+  border-bottom-color: var(--border);
+}
+
+.docs-sidebar .toc-list {
+  padding: 14px 20px 24px;
+}
+
+.docs-sidebar .empty-text {
+  margin: 0;
+  padding: 14px 20px 24px;
+}
+
+.docs-sidebar-resizer {
+  position: sticky;
+  z-index: 3;
+  top: 65px;
+  width: 8px;
+  height: calc(100dvh - 65px);
+  border: 0;
+  background: transparent;
+  cursor: col-resize;
+  padding: 0;
+}
+
+.docs-sidebar-resizer::before {
+  display: block;
+  width: 1px;
+  height: 100%;
+  background: var(--border);
+  content: "";
+}
+
+.docs-sidebar-resizer:hover::before,
+.docs-sidebar-resizer:focus-visible::before,
+.docs-sidebar-resizing .docs-sidebar-resizer::before {
+  background: var(--accent-border);
+}
+
+.docs-sidebar-resizer:focus-visible {
+  outline: none;
+}
+
+.docs-sidebar-resizing,
+.docs-sidebar-resizing * {
+  cursor: col-resize !important;
+  user-select: none;
 }
 
 .toc-toggle {
@@ -1857,6 +1917,10 @@ textarea:focus {
   }
 
   .docs-sidebar {
+    display: none;
+  }
+
+  .docs-sidebar-resizer {
     display: none;
   }
 

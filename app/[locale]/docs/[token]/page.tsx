@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { DocsToc } from "@/components/docs-toc";
 import { DocsProjectSwitcher } from "@/components/docs-project-switcher";
+import { DocsSidebarResizer } from "@/components/docs-sidebar-resizer";
 import { DocsSearch } from "@/components/docs-search";
 import { MarkdownBody } from "@/components/markdown-body";
 import { SettingsMenu } from "@/components/settings-menu";
@@ -149,6 +150,7 @@ export default async function DocsPage({ params, searchParams }: DocsPageProps) 
                 }}
               />
             </aside>
+            <DocsSidebarResizer label={t.docs.tocResize} projectToken={project.shareToken} />
             <main className="docs-content">
               <div className="docs-meta">{t.docs.version}: {formatDateTime(currentVersion.createdAt, locale)}</div>
               <MarkdownBody content={currentVersion.content} labels={t.components.copy} />
