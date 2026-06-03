@@ -24,7 +24,7 @@ export function CopyableText({
     try {
       await writeClipboardText(value);
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 650);
+      window.setTimeout(() => setCopied(false), 1000);
     } catch {
       setCopied(false);
     }

@@ -1445,7 +1445,7 @@ textarea:focus {
 }
 
 .json-field-name-copied {
-  animation: json-field-copy-settle 650ms ease-out;
+  animation: json-field-copy-settle 1000ms ease-out;
 }
 
 .json-field-name-copied::after,
@@ -1456,22 +1456,23 @@ textarea:focus {
   left: 100%;
   display: inline-grid;
   box-sizing: border-box;
-  width: 14px;
-  height: 14px;
+  min-width: 58px;
+  min-height: 22px;
   place-items: center;
   border: 1px solid var(--copy-popover-border);
   border-radius: 999px;
   background: var(--copy-popover-bg);
   color: var(--copy-popover-text);
-  content: "✓";
-  font-size: 10px;
+  content: "✓ 已复制";
+  font-size: 12px;
   font-weight: 700;
   line-height: 1;
   opacity: 0;
+  padding: 0 7px;
   pointer-events: none;
-  transform: translate(5px, -35%);
+  transform: translate(6px, -50%);
   white-space: nowrap;
-  animation: json-field-copy-label 650ms ease-out forwards;
+  animation: json-field-copy-label 1000ms ease-out forwards;
 }
 
 @keyframes json-field-copy-settle {
@@ -1489,18 +1490,18 @@ textarea:focus {
 @keyframes json-field-copy-label {
   0% {
     opacity: 0;
-    transform: translate(3px, -35%) scale(0.95);
+    transform: translate(4px, -50%) scale(0.96);
   }
 
   18%,
   72% {
     opacity: 1;
-    transform: translate(5px, -35%) scale(1);
+    transform: translate(6px, -50%) scale(1);
   }
 
   100% {
     opacity: 0;
-    transform: translate(5px, -35%) scale(1);
+    transform: translate(6px, -50%) scale(1);
   }
 }
 

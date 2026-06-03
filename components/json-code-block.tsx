@@ -41,7 +41,7 @@ export function JsonCodeBlock({ code }: JsonCodeBlockProps) {
     try {
       await writeClipboardText(key);
       setCopiedKey(key);
-      window.setTimeout(() => setCopiedKey(""), 650);
+      window.setTimeout(() => setCopiedKey(""), 1000);
     } catch {
       setCopiedKey("");
     }
