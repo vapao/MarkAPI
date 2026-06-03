@@ -29,33 +29,41 @@ export default async function LoginPage({ params, searchParams }: LoginPageProps
 
   return (
     <main className="login-page">
-      <form className="login-card" action={loginAction}>
-        <input type="hidden" name="locale" value={locale} />
-        <div className="login-card-header">
+      <section aria-labelledby="login-title" className="login-shell">
+        <div className="login-intro">
           <div>
-            <h1>MarkAPI</h1>
-            <p>{t.common.markApiAdmin}</p>
-          </div>
-          <div className="login-card-controls">
-            <SettingsMenu
-              labels={{
-                locale: t.components.locale,
-                settings: t.components.settings,
-                theme: t.components.theme
-              }}
-              locale={locale}
-            />
+            <h1 id="login-title">MarkAPI</h1>
+            <p>{t.admin.login.description}</p>
           </div>
         </div>
-        {errorMessage ? <p className="form-error">{errorMessage}</p> : null}
-        <label>
-          <span>{t.admin.login.password}</span>
-          <input autoFocus required type="password" name="password" />
-        </label>
-        <button className="button button-primary" type="submit">
-          {t.admin.login.submit}
-        </button>
-      </form>
+        <form className="login-card" action={loginAction}>
+          <input type="hidden" name="locale" value={locale} />
+          <div className="login-card-header">
+            <div>
+              <h2>{t.admin.login.title}</h2>
+              <p>{t.common.markApiAdmin}</p>
+            </div>
+            <div className="login-card-controls">
+              <SettingsMenu
+                labels={{
+                  locale: t.components.locale,
+                  settings: t.components.settings,
+                  theme: t.components.theme
+                }}
+                locale={locale}
+              />
+            </div>
+          </div>
+          {errorMessage ? <p className="form-error">{errorMessage}</p> : null}
+          <label>
+            <span>{t.admin.login.password}</span>
+            <input autoComplete="current-password" autoFocus required type="password" name="password" />
+          </label>
+          <button className="button button-primary" type="submit">
+            {t.admin.login.submit}
+          </button>
+        </form>
+      </section>
     </main>
   );
 }

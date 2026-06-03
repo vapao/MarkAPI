@@ -19,6 +19,8 @@
   --danger-border: #ffccc7;
   --control-bg: #ffffff;
   --header-bg: rgb(255 255 255 / 96%);
+  --login-bg-accent: rgb(8 127 122 / 8%);
+  --login-grid-line: rgb(217 225 231 / 42%);
   --focus-ring: rgb(8 127 122 / 14%);
   --spinner-track: rgb(8 127 122 / 20%);
   --dropzone-border: #a9c7c4;
@@ -86,6 +88,8 @@
   --danger-border: #70332f;
   --control-bg: #11191e;
   --header-bg: rgb(18 26 31 / 94%);
+  --login-bg-accent: rgb(79 195 183 / 5%);
+  --login-grid-line: rgb(255 255 255 / 4%);
   --focus-ring: rgb(79 195 183 / 20%);
   --spinner-track: rgb(79 195 183 / 22%);
   --dropzone-border: #3a6b66;
@@ -231,27 +235,65 @@ textarea:focus {
   display: grid;
   min-height: 100dvh;
   place-items: center;
-  padding: 24px;
+  background:
+    linear-gradient(90deg, var(--login-grid-line) 1px, transparent 1px),
+    linear-gradient(180deg, var(--login-grid-line) 1px, transparent 1px),
+    linear-gradient(135deg, var(--login-bg-accent), transparent 42%),
+    var(--bg);
+  background-size: 48px 48px, 48px 48px, 100% 100%, auto;
+  padding: 32px;
+}
+
+.login-shell {
+  display: grid;
+  width: min(100%, 920px);
+  grid-template-columns: minmax(0, 1fr) 400px;
+  align-items: center;
+  gap: 56px;
+}
+
+.login-intro {
+  display: grid;
+  max-width: 430px;
+}
+
+.login-intro h1,
+.login-intro p {
+  margin: 0;
+}
+
+.login-intro h1 {
+  color: var(--accent);
+  font-size: 52px;
+  line-height: 1;
+}
+
+.login-intro p {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.7;
 }
 
 .login-card {
   display: grid;
-  width: min(100%, 420px);
-  gap: 22px;
+  width: 100%;
+  gap: 24px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
-  padding: 28px;
+  padding: 30px;
   box-shadow: var(--shadow);
 }
 
-.login-card h1,
+.login-card h2,
 .login-card p {
   margin: 0;
 }
 
-.login-card h1 {
-  font-size: 28px;
+.login-card h2 {
+  color: var(--text-strong);
+  font-size: 24px;
   line-height: 1.2;
 }
 
@@ -1840,6 +1882,28 @@ textarea:focus {
 
   .project-row {
     display: flex;
+  }
+
+  .login-page {
+    align-items: start;
+    padding: 24px 16px;
+  }
+
+  .login-shell {
+    display: block;
+    width: min(100%, 420px);
+  }
+
+  .login-intro {
+    margin-bottom: 24px;
+  }
+
+  .login-intro h1 {
+    font-size: 36px;
+  }
+
+  .login-card {
+    padding: 24px;
   }
 
   .docs-header {

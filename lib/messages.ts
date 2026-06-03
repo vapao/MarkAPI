@@ -18,6 +18,8 @@ export const messages = {
     admin: {
       logout: "退出登录",
       login: {
+        title: "登录",
+        description: "自托管 Markdown API 文档系统",
         password: "管理密码",
         submit: "登录"
       },
@@ -137,6 +139,8 @@ export const messages = {
     admin: {
       logout: "Log out",
       login: {
+        title: "Sign in",
+        description: "Self-hosted Markdown API documentation system",
         password: "Admin password",
         submit: "Log in"
       },
