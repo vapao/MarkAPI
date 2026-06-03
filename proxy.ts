@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { DEFAULT_LOCALE, isLocale, LOCALE_HEADER, localizedPath } from "@/lib/locales";
+import { isLocale, LOCALE_HEADER } from "@/lib/locales";
 
 const PUBLIC_FILE_PATTERN = /\.[^/]+$/;
 
@@ -20,20 +20,6 @@ export function proxy(request: NextRequest) {
     return NextResponse.next({
       request: { headers }
     });
-  }
-
-  if (
-    pathname === "/" ||
-    pathname === "/admin" ||
-    pathname.startsWith("/admin/") ||
-    pathname === "/docs" ||
-    pathname.startsWith("/docs/")
-  ) {
-    const url = request.nextUrl.clone();
-
-    url.pathname = localizedPath(DEFAULT_LOCALE, pathname === "/" ? "/admin/projects" : pathname);
-
-    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();
