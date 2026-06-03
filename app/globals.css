@@ -1452,7 +1452,7 @@ textarea:focus {
 .copy-token-copied::after {
   position: absolute;
   z-index: 1;
-  top: 1px;
+  top: 50%;
   left: 100%;
   display: inline-grid;
   box-sizing: border-box;
