@@ -1399,8 +1399,8 @@ textarea:focus {
   display: inline-block;
   border: 0;
   border-radius: 3px;
-  background: transparent;
-  color: var(--accent-strong);
+  background: var(--inline-code-bg);
+  color: var(--text-strong);
   cursor: pointer;
   font: inherit;
   padding: 0 2px;
