@@ -103,8 +103,8 @@
   --inline-code-bg: #1d2a30;
   --copy-token-text: #cbd7dc;
   --copy-token-decoration: #667b84;
-  --copy-popover-border: rgb(79 195 183 / 36%);
-  --copy-popover-bg: rgb(79 195 183 / 14%);
+  --copy-popover-border: #326e69;
+  --copy-popover-bg: #142826;
   --copy-popover-text: #88ded5;
   --json-text: #c5d5da;
   --json-field: #7ee0d4;

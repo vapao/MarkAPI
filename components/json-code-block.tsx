@@ -24,7 +24,7 @@ function jsonString(value: string) {
 }
 
 export function JsonCodeBlock({ code }: JsonCodeBlockProps) {
-  const [copiedKey, setCopiedKey] = useState("");
+  const [copiedFieldId, setCopiedFieldId] = useState("");
   let value: JsonValue;
 
   try {
@@ -37,17 +37,17 @@ export function JsonCodeBlock({ code }: JsonCodeBlockProps) {
     );
   }
 
-  async function handleCopy(key: string) {
+  async function handleCopy(key: string, fieldId: string) {
     try {
       await writeClipboardText(key);
-      setCopiedKey(key);
-      window.setTimeout(() => setCopiedKey(""), 1000);
+      setCopiedFieldId(fieldId);
+      window.setTimeout(() => setCopiedFieldId(""), 1000);
     } catch {
-      setCopiedKey("");
+      setCopiedFieldId("");
     }
   }
 
-  function renderValue(item: JsonValue, depth: number): ReactNode {
+  function renderValue(item: JsonValue, depth: number, path: string): ReactNode {
     if (item === null) {
       return <span className="json-null">null</span>;
     }
@@ -76,7 +76,7 @@ export function JsonCodeBlock({ code }: JsonCodeBlockProps) {
           {item.map((entry, index) => (
             <Fragment key={index}>
               {indent(depth + 1)}
-              {renderValue(entry, depth + 1)}
+              {renderValue(entry, depth + 1, `${path}[${index}]`)}
               {index < item.length - 1 ? <span className="json-punctuation">,</span> : null}
               {"\n"}
             </Fragment>
@@ -97,24 +97,28 @@ export function JsonCodeBlock({ code }: JsonCodeBlockProps) {
       <>
         <span className="json-punctuation">{"{"}</span>
         {"\n"}
-        {entries.map(([key, entry], index) => (
-          <Fragment key={key}>
-            {indent(depth + 1)}
-            <button
-              aria-label={`复制字段名 ${key}`}
-              className={key === copiedKey ? "json-field-name json-field-name-copied" : "json-field-name"}
-              onClick={() => handleCopy(key)}
-              title="点击复制字段名"
-              type="button"
-            >
-              {jsonString(key)}
-            </button>
-            <span className="json-punctuation">: </span>
-            {renderValue(entry, depth + 1)}
-            {index < entries.length - 1 ? <span className="json-punctuation">,</span> : null}
-            {"\n"}
-          </Fragment>
-        ))}
+        {entries.map(([key, entry], index) => {
+          const fieldId = `${path}.${index}:${key}`;
+
+          return (
+            <Fragment key={fieldId}>
+              {indent(depth + 1)}
+              <button
+                aria-label={`复制字段名 ${key}`}
+                className={fieldId === copiedFieldId ? "json-field-name json-field-name-copied" : "json-field-name"}
+                onClick={() => handleCopy(key, fieldId)}
+                title="点击复制字段名"
+                type="button"
+              >
+                {jsonString(key)}
+              </button>
+              <span className="json-punctuation">: </span>
+              {renderValue(entry, depth + 1, fieldId)}
+              {index < entries.length - 1 ? <span className="json-punctuation">,</span> : null}
+              {"\n"}
+            </Fragment>
+          );
+        })}
         {indent(depth)}
         <span className="json-punctuation">{"}"}</span>
       </>
@@ -123,7 +127,7 @@ export function JsonCodeBlock({ code }: JsonCodeBlockProps) {
 
   return (
     <pre className="json-code-block">
-      <code>{renderValue(value, 0)}</code>
+      <code>{renderValue(value, 0, "$")}</code>
     </pre>
   );
 }
