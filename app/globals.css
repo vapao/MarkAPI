@@ -34,9 +34,9 @@
   --code-bg: #111820;
   --code-text: #d8f3f0;
   --inline-code-bg: #eef3f6;
-  --copy-popover-border: rgb(167 255 242 / 30%);
-  --copy-popover-bg: rgb(15 51 49 / 94%);
-  --copy-popover-text: #b8fff5;
+  --copy-popover-border: #9acbc7;
+  --copy-popover-bg: #e9f7f5;
+  --copy-popover-text: #05645f;
   --json-text: #d7e2e8;
   --json-field: #76e4d4;
   --json-field-hover: #a7fff2;
@@ -99,9 +99,9 @@
   --code-bg: #0a0f13;
   --code-text: #c4ddd8;
   --inline-code-bg: #1d2a30;
-  --copy-popover-border: rgb(136 222 213 / 28%);
-  --copy-popover-bg: rgb(7 22 23 / 94%);
-  --copy-popover-text: #c8fff8;
+  --copy-popover-border: rgb(79 195 183 / 36%);
+  --copy-popover-bg: rgb(79 195 183 / 14%);
+  --copy-popover-text: #88ded5;
   --json-text: #c5d5da;
   --json-field: #7ee0d4;
   --json-field-hover: #b9fff7;
