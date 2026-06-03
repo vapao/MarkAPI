@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { AdminHeader } from "@/components/admin-header";
 import { requireAdmin } from "@/lib/auth";
+import { getProjectsWithLatestVersion } from "@/lib/db";
 import { formatDateTime } from "@/lib/format";
 import { localizedPath } from "@/lib/locales";
 import { getMessages } from "@/lib/messages";
 import { resolveLocale } from "@/lib/page-locale";
-import { prisma } from "@/lib/prisma";
 import { getShareUrl } from "@/lib/url";
 
 type ProjectsPageProps = {
@@ -21,15 +21,7 @@ export default async function ProjectsPage({ params }: ProjectsPageProps) {
 
   await requireAdmin(locale);
 
-  const projects = await prisma.project.findMany({
-    orderBy: { createdAt: "desc" },
-    include: {
-      versions: {
-        orderBy: { createdAt: "desc" },
-        take: 1
-      }
-    }
-  });
+  const projects = getProjectsWithLatestVersion();
 
   const shareUrls = new Map(
     await Promise.all(

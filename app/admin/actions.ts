@@ -4,9 +4,15 @@ import crypto from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { clearAdminSession, requireAdmin, setAdminSession } from "@/lib/auth";
+import {
+  createDocumentVersion,
+  createProject,
+  projectExists,
+  projectSlugExists,
+  updateProjectPublicVersionHistory
+} from "@/lib/db";
 import { localizedPath, readFormLocale, type Locale } from "@/lib/locales";
 import type { AdminErrorCode } from "@/lib/messages";
-import { prisma } from "@/lib/prisma";
 
 const MAX_MARKDOWN_BYTES = 2 * 1024 * 1024;
 
@@ -28,12 +34,12 @@ function slugify(value: string) {
     .replace(/^-|-$/g, "");
 }
 
-async function createUniqueSlug(name: string) {
+function createUniqueSlug(name: string) {
   const base = slugify(name) || "project";
   let slug = base;
   let suffix = 2;
 
-  while (await prisma.project.findUnique({ where: { slug }, select: { id: true } })) {
+  while (projectSlugExists(slug)) {
     slug = `${base}-${suffix}`;
     suffix += 1;
   }
@@ -79,13 +85,10 @@ export async function createProjectAction(formData: FormData) {
     redirectWithError(locale, "/admin/projects/new", "emptyProjectName");
   }
 
-  const project = await prisma.project.create({
-    data: {
-      name,
-      slug: await createUniqueSlug(name),
-      shareToken: crypto.randomBytes(24).toString("base64url")
-    },
-    select: { id: true }
+  const project = createProject({
+    name,
+    slug: createUniqueSlug(name),
+    shareToken: crypto.randomBytes(24).toString("base64url")
   });
 
   revalidatePath(localizedPath(locale, "/admin/projects"));
@@ -97,12 +100,7 @@ export async function uploadVersionAction(projectId: number, formData: FormData)
 
   await requireAdmin(locale);
 
-  const project = await prisma.project.findUnique({
-    where: { id: projectId },
-    select: { id: true }
-  });
-
-  if (!project) {
+  if (!projectExists(projectId)) {
     redirect(localizedPath(locale, "/admin/projects"));
   }
 
@@ -121,12 +119,10 @@ export async function uploadVersionAction(projectId: number, formData: FormData)
     redirectWithError(locale, redirectPath, "markdownTooLarge");
   }
 
-  await prisma.documentVersion.create({
-    data: {
-      projectId,
-      content: await file.text(),
-      note: readRequiredText(formData, "note") || null
-    }
+  createDocumentVersion({
+    projectId,
+    content: await file.text(),
+    note: readRequiredText(formData, "note") || null
   });
 
   revalidatePath(localizedPath(locale, "/admin/projects"));
@@ -139,13 +135,10 @@ export async function updateProjectPublicAccessAction(projectId: number, formDat
 
   await requireAdmin(locale);
 
-  const project = await prisma.project.update({
-    where: { id: projectId },
-    data: {
-      allowPublicVersionHistory: formData.get("allowPublicVersionHistory") === "on"
-    },
-    select: { shareToken: true }
-  });
+  const project = updateProjectPublicVersionHistory(
+    projectId,
+    formData.get("allowPublicVersionHistory") === "on"
+  );
 
   revalidatePath(localizedPath(locale, "/admin/projects"));
   revalidatePath(localizedPath(locale, `/admin/projects/${projectId}`));

@@ -47,7 +47,7 @@ docker compose up -d
 ```env
 ADMIN_PASSWORD=replace-with-admin-password
 SESSION_SECRET=replace-with-long-random-secret
-DATABASE_URL=file:../data/markapi.db
+DATABASE_URL=file:./data/markapi.db
 ALLOW_HTTP_ADMIN_LOGIN=1
 ```
 
@@ -94,7 +94,7 @@ MarkAPI 直接渲染 Markdown 文件，不要求专有格式。
 ```env
 ADMIN_PASSWORD=replace-with-admin-password
 SESSION_SECRET=replace-with-long-random-secret
-DATABASE_URL=file:../data/markapi.db
+DATABASE_URL=file:./data/markapi.db
 ALLOW_HTTP_ADMIN_LOGIN=1
 ```
 
@@ -124,7 +124,6 @@ ALLOW_HTTP_ADMIN_LOGIN=1
 
 ```bash
 npm install
-npm run prisma:deploy
 npm run dev
 ```
 
@@ -142,7 +141,6 @@ npm run build
 - [Next.js](https://nextjs.org/) App Router
 - [React](https://react.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
-- [Prisma](https://www.prisma.io/)
 - [SQLite](https://www.sqlite.org/)
 
 ## 项目状态

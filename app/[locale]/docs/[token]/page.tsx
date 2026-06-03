@@ -8,12 +8,12 @@ import { MarkdownBody } from "@/components/markdown-body";
 import { SettingsMenu } from "@/components/settings-menu";
 import { VersionSelect } from "@/components/version-select";
 import { isAdminAuthenticated } from "@/lib/auth";
+import { getProjectWithVersionsByShareToken } from "@/lib/db";
 import { formatDateTime } from "@/lib/format";
 import { localizedPath } from "@/lib/locales";
 import { extractToc } from "@/lib/markdown";
 import { getMessages } from "@/lib/messages";
 import { resolveLocale } from "@/lib/page-locale";
-import { prisma } from "@/lib/prisma";
 
 type DocsPageProps = {
   params: Promise<{
@@ -31,14 +31,7 @@ export default async function DocsPage({ params, searchParams }: DocsPageProps) 
   const t = getMessages(locale);
   const { version } = await searchParams;
   const isAdmin = await isAdminAuthenticated();
-  const project = await prisma.project.findUnique({
-    where: { shareToken: token },
-    include: {
-      versions: {
-        orderBy: { createdAt: "desc" }
-      }
-    }
-  });
+  const project = getProjectWithVersionsByShareToken(token);
 
   if (!project) {
     notFound();

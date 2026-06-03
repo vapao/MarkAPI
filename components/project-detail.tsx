@@ -1,9 +1,9 @@
-import type { DocumentVersion, Project } from "@prisma/client";
 import Link from "next/link";
 import { updateProjectPublicAccessAction, uploadVersionAction } from "@/app/admin/actions";
 import { CopyLinkButton } from "@/components/copy-link-button";
 import { MarkdownFileField } from "@/components/markdown-file-field";
 import { ProjectPublicAccessForm } from "@/components/project-public-access-form";
+import type { ProjectWithVersions } from "@/lib/db";
 import { formatDateTime } from "@/lib/format";
 import { localizedPath, type Locale } from "@/lib/locales";
 import type { Messages } from "@/lib/messages";
@@ -16,9 +16,7 @@ type ProjectDetailProps = {
     project: Messages["admin"]["project"];
   };
   locale: Locale;
-  project: Project & {
-    versions: DocumentVersion[];
-  };
+  project: ProjectWithVersions;
   shareUrl: string;
   error?: string;
 };

@@ -6,7 +6,6 @@
 
 ```bash
 npm install
-npm run prisma:deploy
 npm run dev
 ```
 
@@ -19,11 +18,7 @@ npm run lint
 npm run build
 ```
 
-涉及 Prisma schema 的改动，还需要提交对应 migration，并确认：
-
-```bash
-npm run prisma:generate
-```
+涉及数据库结构的改动，需要同步更新 `lib/db.ts` 中的 SQLite 初始化逻辑。
 
 ## Pull Request
 

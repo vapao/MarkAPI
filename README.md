@@ -47,7 +47,7 @@ Before starting, edit `.env` and set at least:
 ```env
 ADMIN_PASSWORD=replace-with-admin-password
 SESSION_SECRET=replace-with-long-random-secret
-DATABASE_URL=file:../data/markapi.db
+DATABASE_URL=file:./data/markapi.db
 ALLOW_HTTP_ADMIN_LOGIN=1
 ```
 
@@ -94,7 +94,7 @@ Default `.env.example`:
 ```env
 ADMIN_PASSWORD=replace-with-admin-password
 SESSION_SECRET=replace-with-long-random-secret
-DATABASE_URL=file:../data/markapi.db
+DATABASE_URL=file:./data/markapi.db
 ALLOW_HTTP_ADMIN_LOGIN=1
 ```
 
@@ -124,7 +124,6 @@ This allows the admin session cookie to be sent without HTTPS. Login credentials
 
 ```bash
 npm install
-npm run prisma:deploy
 npm run dev
 ```
 
@@ -142,7 +141,6 @@ This project uses npm scripts. pnpm and yarn workflows are not required.
 - [Next.js](https://nextjs.org/) App Router
 - [React](https://react.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
-- [Prisma](https://www.prisma.io/)
 - [SQLite](https://www.sqlite.org/)
 
 ## Project Status

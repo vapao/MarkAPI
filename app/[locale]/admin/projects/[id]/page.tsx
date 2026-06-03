@@ -2,9 +2,9 @@ import { notFound } from "next/navigation";
 import { AdminHeader } from "@/components/admin-header";
 import { ProjectDetail } from "@/components/project-detail";
 import { requireAdmin } from "@/lib/auth";
+import { getProjectWithVersionsById } from "@/lib/db";
 import { getAdminErrorMessage, getMessages } from "@/lib/messages";
 import { resolveLocale } from "@/lib/page-locale";
-import { prisma } from "@/lib/prisma";
 import { getShareUrl } from "@/lib/url";
 
 type ProjectPageProps = {
@@ -30,14 +30,7 @@ export default async function ProjectPage({ params, searchParams }: ProjectPageP
     notFound();
   }
 
-  const project = await prisma.project.findUnique({
-    where: { id: projectId },
-    include: {
-      versions: {
-        orderBy: { createdAt: "desc" }
-      }
-    }
-  });
+  const project = getProjectWithVersionsById(projectId);
 
   if (!project) {
     notFound();
