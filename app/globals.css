@@ -34,6 +34,8 @@
   --code-bg: #111820;
   --code-text: #d8f3f0;
   --inline-code-bg: #eef3f6;
+  --copy-token-text: #26343b;
+  --copy-token-decoration: #86a5ad;
   --copy-popover-border: #9acbc7;
   --copy-popover-bg: #e9f7f5;
   --copy-popover-text: #05645f;
@@ -99,6 +101,8 @@
   --code-bg: #0a0f13;
   --code-text: #c4ddd8;
   --inline-code-bg: #1d2a30;
+  --copy-token-text: #cbd7dc;
+  --copy-token-decoration: #667b84;
   --copy-popover-border: rgb(79 195 183 / 36%);
   --copy-popover-bg: rgb(79 195 183 / 14%);
   --copy-popover-text: #88ded5;
@@ -1399,14 +1403,18 @@ textarea:focus {
   display: inline-block;
   border: 0;
   border-radius: 3px;
-  background: var(--inline-code-bg);
-  color: var(--text-strong);
+  background: transparent;
+  color: var(--copy-token-text);
   cursor: pointer;
   font: inherit;
   padding: 0 2px;
+  text-decoration: underline dotted var(--copy-token-decoration);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
   transition:
     background 160ms ease,
-    color 160ms ease;
+    color 160ms ease,
+    text-decoration-color 160ms ease;
 }
 
 .copy-token:hover,
@@ -1414,6 +1422,7 @@ textarea:focus {
 .copy-token-copied {
   background: var(--accent-soft);
   color: var(--accent-strong);
+  text-decoration-color: var(--accent);
   outline: none;
 }
 
