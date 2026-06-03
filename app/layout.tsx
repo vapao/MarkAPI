@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import "./globals.css";
+import { HTML_LANG, DEFAULT_LOCALE, isLocale, LOCALE_HEADER } from "@/lib/locales";
+import { getMessages } from "@/lib/messages";
 
 const themeScript = `
 (() => {
@@ -13,18 +16,31 @@ const themeScript = `
 })();
 `;
 
-export const metadata: Metadata = {
-  title: "MarkAPI",
-  description: "内部 Markdown API 文档浏览器"
-};
+async function getRequestLocale() {
+  const headerStore = await headers();
+  const locale = headerStore.get(LOCALE_HEADER);
 
-export default function RootLayout({
+  return isLocale(locale) ? locale : DEFAULT_LOCALE;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+
+  return {
+    title: "MarkAPI",
+    description: getMessages(locale).metadata.description
+  };
+}
+
+export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getRequestLocale();
+
   return (
-    <html lang="zh-CN" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang={HTML_LANG[locale]} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

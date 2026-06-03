@@ -4,10 +4,15 @@ import { useState } from "react";
 import { writeClipboardText } from "@/lib/client-clipboard";
 
 type CopyLinkButtonProps = {
+  labels: {
+    copied: string;
+    copyLink: string;
+    failed: string;
+  };
   value: string;
 };
 
-export function CopyLinkButton({ value }: CopyLinkButtonProps) {
+export function CopyLinkButton({ labels, value }: CopyLinkButtonProps) {
   const [status, setStatus] = useState<"idle" | "copied" | "failed">("idle");
 
   async function handleCopy() {
@@ -23,7 +28,7 @@ export function CopyLinkButton({ value }: CopyLinkButtonProps) {
 
   return (
     <button className="button button-secondary" type="button" onClick={handleCopy}>
-      {status === "copied" ? "已复制" : status === "failed" ? "复制失败" : "复制链接"}
+      {status === "copied" ? labels.copied : status === "failed" ? labels.failed : labels.copyLink}
     </button>
   );
 }

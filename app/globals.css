@@ -262,6 +262,12 @@ textarea:focus {
   gap: 16px;
 }
 
+.login-card-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .login-card p {
   margin-top: 6px;
   color: var(--muted);
@@ -321,45 +327,129 @@ textarea:focus {
   gap: 10px;
 }
 
-.theme-toggle {
-  display: inline-flex;
-  width: 102px;
-  height: 36px;
-  align-items: center;
+.settings-menu {
+  position: relative;
   flex: 0 0 auto;
+}
+
+.settings-menu-trigger {
+  display: inline-grid;
+  width: 36px;
+  min-height: 36px;
+  place-items: center;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--control-bg);
-  padding: 2px;
-}
-
-.theme-toggle-button {
-  display: inline-grid;
-  width: 32px;
-  height: 30px;
-  place-items: center;
-  border: 0;
-  border-radius: 4px;
-  background: transparent;
   color: var(--muted);
   cursor: pointer;
-  font-size: 13px;
-  font-weight: 700;
   padding: 0;
 }
 
-.theme-toggle-button:hover,
-.theme-toggle-button:focus-visible {
+.settings-menu-trigger:hover,
+.settings-menu-trigger:focus-visible,
+.settings-menu-trigger[aria-expanded="true"] {
+  border-color: var(--accent-border);
   background: var(--accent-soft);
   color: var(--accent-strong);
   outline: none;
 }
 
-.theme-toggle-button-active,
-.theme-toggle-button-active:hover,
-.theme-toggle-button-active:focus-visible {
-  background: var(--accent);
-  color: var(--button-primary-text);
+.settings-menu-trigger:focus-visible {
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.settings-menu-popover {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 8px);
+  right: 0;
+  display: grid;
+  width: 232px;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow);
+  padding: 10px;
+}
+
+.settings-menu-section {
+  display: grid;
+  gap: 6px;
+}
+
+.settings-menu-section-separated {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+.settings-menu-heading {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  padding: 0 8px;
+}
+
+.settings-menu-options {
+  display: grid;
+  gap: 3px;
+}
+
+.settings-menu-option {
+  display: flex;
+  width: 100%;
+  min-height: 34px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 8px;
+  text-align: left;
+}
+
+.settings-menu-option:hover,
+.settings-menu-option:focus-visible {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  outline: none;
+}
+
+.settings-menu-option-active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.settings-menu-option:disabled {
+  cursor: wait;
+}
+
+.settings-menu-form {
+  margin: 0;
+}
+
+.settings-menu-option-danger {
+  color: var(--danger);
+}
+
+.settings-menu-option-danger:hover,
+.settings-menu-option-danger:focus-visible {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.settings-menu-option-label {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
 }
 
 .admin-main {
@@ -445,6 +535,96 @@ textarea:focus {
 
 .share-row {
   margin-top: 14px;
+}
+
+.public-access-share {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.public-access-share h3 {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.public-access-share .share-row {
+  margin-top: 0;
+}
+
+.public-access-setting {
+  margin: 18px 0 0;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.public-access-toggle {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.public-access-switch-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.public-access-switch {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.public-access-switch::after {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgb(15 23 42 / 20%);
+  content: "";
+  transition: transform 160ms ease;
+}
+
+.public-access-switch-input:checked + .public-access-switch {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.public-access-switch-input:checked + .public-access-switch::after {
+  transform: translateX(16px);
+}
+
+.public-access-switch-input:focus-visible + .public-access-switch {
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.public-access-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.public-access-title {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.public-access-help {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
 }
 
 .stack-form {
@@ -617,10 +797,44 @@ textarea:focus {
   margin: 0;
 }
 
-.docs-header p {
-  color: var(--accent);
+.docs-breadcrumb {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+}
+
+.docs-breadcrumb-link,
+.docs-breadcrumb-brand,
+.docs-breadcrumb-separator {
+  flex: 0 0 auto;
   font-size: 13px;
   font-weight: 700;
+  line-height: 1.3;
+}
+
+.docs-breadcrumb-link {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.docs-breadcrumb-link:hover,
+.docs-breadcrumb-link:focus-visible {
+  color: var(--accent);
+  outline: none;
+}
+
+.docs-breadcrumb-link:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.docs-breadcrumb-brand {
+  color: var(--accent);
+}
+
+.docs-breadcrumb-separator {
+  color: var(--muted);
 }
 
 .docs-title {
@@ -640,8 +854,8 @@ textarea:focus {
 
 .version-select {
   position: relative;
-  width: 212px;
-  min-width: 212px;
+  width: 240px;
+  min-width: 240px;
   flex-shrink: 0;
   color: var(--muted);
   font-size: 13px;
@@ -1593,6 +1807,14 @@ textarea:focus {
     width: min(100%, calc(100vw - 32px));
   }
 
+  .settings-menu {
+    align-self: flex-end;
+  }
+
+  .settings-menu-popover {
+    width: min(232px, calc(100vw - 32px));
+  }
+
   .project-switcher {
     align-items: flex-start;
     flex-direction: column;
@@ -1600,6 +1822,12 @@ textarea:focus {
 
   .project-switcher-trigger {
     width: 100%;
+  }
+
+  .docs-breadcrumb .project-switcher {
+    flex: 1 1 auto;
+    align-items: center;
+    flex-direction: row;
   }
 
   .project-switcher-menu {

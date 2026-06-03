@@ -109,7 +109,18 @@ function activateHit(index: number) {
   }
 }
 
-export function DocsSearch() {
+type DocsSearchProps = {
+  labels: {
+    clear: string;
+    inlineHint: string;
+    label: string;
+    noMatches: string;
+    placeholder: string;
+    shortcutTitle: string;
+  };
+};
+
+export function DocsSearch({ labels }: DocsSearchProps) {
   const [query, setQuery] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [matchCount, setMatchCount] = useState(0);
@@ -207,11 +218,11 @@ export function DocsSearch() {
     <div className="docs-search" role="search">
       <span className="docs-search-field">
         <input
-          aria-label="搜索当前文档"
+          aria-label={labels.label}
           aria-keyshortcuts="ArrowDown ArrowUp"
           className="docs-search-input"
-          placeholder="搜索当前文档"
-          title={canMoveBetweenHits ? "按 ↑/↓ 切换匹配项" : undefined}
+          placeholder={labels.placeholder}
+          title={canMoveBetweenHits ? labels.shortcutTitle : undefined}
           type="search"
           value={query}
           onChange={(event) => updateQuery(event.target.value)}
@@ -230,11 +241,11 @@ export function DocsSearch() {
           className={canMoveBetweenHits ? "docs-search-inline-hint" : "docs-search-inline-hint docs-search-hint-hidden"}
           aria-hidden={!canMoveBetweenHits}
         >
-          ↑↓ 切换
+          {labels.inlineHint}
         </span>
         {query ? (
           <button
-            aria-label="清除搜索"
+            aria-label={labels.clear}
             className="docs-search-clear"
             type="button"
             onClick={() => updateQuery("")}
@@ -247,7 +258,7 @@ export function DocsSearch() {
         className={shouldShowCount ? "docs-search-count" : "docs-search-count docs-search-count-hidden"}
         aria-live="polite"
       >
-        {shouldShowCount ? (hasMatches ? `${currentIndex + 1}/${matchCount}` : "无匹配") : ""}
+        {shouldShowCount ? (hasMatches ? `${currentIndex + 1}/${matchCount}` : labels.noMatches) : ""}
       </span>
     </div>
   );

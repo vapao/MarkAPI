@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
+import { localizedPath, type Locale } from "@/lib/locales";
 
-export async function getShareUrl(token: string) {
+export async function getShareUrl(token: string, locale: Locale) {
   const headerStore = await headers();
   const host = headerStore.get("x-forwarded-host") ?? headerStore.get("host");
 
@@ -12,5 +13,5 @@ export async function getShareUrl(token: string) {
     headerStore.get("x-forwarded-proto") ??
     (host.startsWith("localhost") || host.startsWith("127.0.0.1") ? "http" : "https");
 
-  return `${protocol}://${host}/docs/${token}`;
+  return `${protocol}://${host}${localizedPath(locale, `/docs/${token}`)}`;
 }

@@ -13,6 +13,10 @@ type JsonValue =
 
 type JsonCodeBlockProps = {
   code: string;
+  labels: {
+    clickToCopy: string;
+    copyField: string;
+  };
 };
 
 function indent(depth: number) {
@@ -23,7 +27,7 @@ function jsonString(value: string) {
   return JSON.stringify(value);
 }
 
-export function JsonCodeBlock({ code }: JsonCodeBlockProps) {
+export function JsonCodeBlock({ code, labels }: JsonCodeBlockProps) {
   const [copiedFieldId, setCopiedFieldId] = useState("");
   let value: JsonValue;
 
@@ -104,10 +108,10 @@ export function JsonCodeBlock({ code }: JsonCodeBlockProps) {
             <Fragment key={fieldId}>
               {indent(depth + 1)}
               <button
-                aria-label={`复制字段名 ${key}`}
+                aria-label={`${labels.copyField} ${key}`}
                 className={fieldId === copiedFieldId ? "json-field-name json-field-name-copied" : "json-field-name"}
                 onClick={() => handleCopy(key, fieldId)}
-                title="点击复制字段名"
+                title={labels.clickToCopy}
                 type="button"
               >
                 {jsonString(key)}

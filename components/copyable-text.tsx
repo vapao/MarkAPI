@@ -7,7 +7,7 @@ type CopyableTextProps = {
   children?: ReactNode;
   className?: string;
   label: string;
-  title?: string;
+  title: string;
   value: string;
 };
 
@@ -15,7 +15,7 @@ export function CopyableText({
   children,
   className = "copy-token",
   label,
-  title = "点击复制",
+  title,
   value
 }: CopyableTextProps) {
   const [copied, setCopied] = useState(false);

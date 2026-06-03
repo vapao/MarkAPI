@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { localizedPath, type Locale } from "@/lib/locales";
 
 const STORAGE_KEY = "markapi:visited-projects";
 const STORAGE_EVENT = "markapi:visited-projects-change";
@@ -17,6 +18,16 @@ type DocsProjectSwitcherProps = {
     token: string;
     name: string;
   };
+  labels: {
+    cancel: string;
+    current: string;
+    delete: string;
+    deleteRecord: string;
+    deleteRecordQuestion: string;
+    opening: string;
+    switchProject: string;
+  };
+  locale: Locale;
 };
 
 function parseProjectsSnapshot(snapshot: string) {
@@ -101,7 +112,7 @@ function forgetProject(token: string) {
   window.dispatchEvent(new Event(STORAGE_EVENT));
 }
 
-export function DocsProjectSwitcher({ currentProject }: DocsProjectSwitcherProps) {
+export function DocsProjectSwitcher({ currentProject, labels, locale }: DocsProjectSwitcherProps) {
   const { name, token } = currentProject;
   const router = useRouter();
   const switcherRef = useRef<HTMLDivElement>(null);
@@ -182,11 +193,11 @@ export function DocsProjectSwitcher({ currentProject }: DocsProjectSwitcherProps
       </button>
       {isLoading ? (
         <span className="project-switcher-status" role="status" aria-live="polite">
-          打开中
+          {labels.opening}
         </span>
       ) : null}
       {isOpen ? (
-        <div className="project-switcher-menu" aria-label="切换项目">
+        <div className="project-switcher-menu" aria-label={labels.switchProject}>
           {projects.map((project) => {
             const isCurrent = project.token === selectedToken;
             const isConfirming = confirmingToken === project.token;
@@ -194,14 +205,14 @@ export function DocsProjectSwitcher({ currentProject }: DocsProjectSwitcherProps
             return (
               <div className="project-switcher-item" key={project.token}>
                 {isConfirming ? (
-                  <div className="project-delete-confirm" role="group" aria-label={`删除 ${project.name} 的访问记录`}>
-                    <span>删除这条访问记录？</span>
+                  <div className="project-delete-confirm" role="group" aria-label={`${labels.deleteRecord} ${project.name}`}>
+                    <span>{labels.deleteRecordQuestion}</span>
                     <button
                       className="project-delete-cancel"
                       type="button"
                       onClick={() => setConfirmingToken(null)}
                     >
-                      取消
+                      {labels.cancel}
                     </button>
                     <button
                       className="project-delete-confirm-button"
@@ -212,7 +223,7 @@ export function DocsProjectSwitcher({ currentProject }: DocsProjectSwitcherProps
                         forgetProject(project.token);
                       }}
                     >
-                      删除
+                      {labels.delete}
                     </button>
                   </div>
                 ) : (
@@ -231,7 +242,7 @@ export function DocsProjectSwitcher({ currentProject }: DocsProjectSwitcherProps
                         setPendingToken(project.token);
                         setIsOpen(false);
                         startTransition(() => {
-                          router.push(`/docs/${project.token}`);
+                          router.push(localizedPath(locale, `/docs/${project.token}`));
                         });
                       }}
                     >
@@ -241,14 +252,14 @@ export function DocsProjectSwitcher({ currentProject }: DocsProjectSwitcherProps
                       <span className="project-switcher-option-name">{project.name}</span>
                     </button>
                     {project.token === token ? (
-                      <span className="project-switcher-current">当前</span>
+                      <span className="project-switcher-current">{labels.current}</span>
                     ) : (
                       <button
                         className="project-delete-button"
                         type="button"
                         onClick={() => setConfirmingToken(project.token)}
                       >
-                        删除
+                        {labels.delete}
                       </button>
                     )}
                   </>

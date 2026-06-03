@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { DEFAULT_LOCALE, localizedPath, type Locale } from "@/lib/locales";
 
 const COOKIE_NAME = "markapi_admin_session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
@@ -85,9 +86,9 @@ export async function isAdminAuthenticated() {
   return Boolean(session && verifySessionValue(session));
 }
 
-export async function requireAdmin() {
+export async function requireAdmin(locale: Locale = DEFAULT_LOCALE) {
   if (!(await isAdminAuthenticated())) {
-    redirect("/admin/login");
+    redirect(localizedPath(locale, "/admin/login"));
   }
 }
 
@@ -98,7 +99,7 @@ export async function setAdminSession() {
     httpOnly: true,
     secure: shouldUseSecureCookie(),
     sameSite: "lax",
-    path: "/admin",
+    path: "/",
     maxAge: SESSION_MAX_AGE_SECONDS
   });
 }
@@ -110,7 +111,7 @@ export async function clearAdminSession() {
     httpOnly: true,
     secure: shouldUseSecureCookie(),
     sameSite: "lax",
-    path: "/admin",
+    path: "/",
     maxAge: 0
   });
 }

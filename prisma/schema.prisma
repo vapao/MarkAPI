@@ -8,12 +8,13 @@ datasource db {
 }
 
 model Project {
-  id         Int               @id @default(autoincrement())
-  name       String
-  slug       String            @unique
-  shareToken String            @unique
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @updatedAt
+  id                        Int      @id @default(autoincrement())
+  name                      String
+  slug                      String   @unique
+  shareToken                String   @unique
+  allowPublicVersionHistory Boolean  @default(true)
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
 
   versions DocumentVersion[]
 }

@@ -2,22 +2,32 @@
 
 import { useId, useState } from "react";
 
-export function MarkdownFileField() {
+type MarkdownFileFieldProps = {
+  labels: {
+    browse: string;
+    choose: string;
+    emptyHint: string;
+    label: string;
+    selectedHint: string;
+  };
+};
+
+export function MarkdownFileField({ labels }: MarkdownFileFieldProps) {
   const inputId = useId();
   const [fileName, setFileName] = useState("");
 
   return (
     <label className="file-field" htmlFor={inputId}>
-      <span className="file-field-label">Markdown 文件</span>
+      <span className="file-field-label">{labels.label}</span>
       <span className="file-dropzone">
         <span className="file-mark">MD</span>
         <span className="file-copy">
-          <span className="file-title">{fileName || "选择 Markdown 文件"}</span>
+          <span className="file-title">{fileName || labels.choose}</span>
           <span className="file-hint">
-            {fileName ? "已选择，提交后会生成新版本" : "支持 .md 文件，最大 2MB"}
+            {fileName ? labels.selectedHint : labels.emptyHint}
           </span>
         </span>
-        <span className="file-action">浏览文件</span>
+        <span className="file-action">{labels.browse}</span>
       </span>
       <input
         id={inputId}

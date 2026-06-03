@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
+import { localizedPath, type Locale } from "@/lib/locales";
 
 type VersionOption = {
   id: number;
@@ -9,14 +10,23 @@ type VersionOption = {
 };
 
 type VersionSelectProps = {
-  token: string;
   currentVersionId: number;
+  labels: {
+    loading: string;
+    selectVersion: string;
+    switchVersion: string;
+    version: string;
+  };
+  locale: Locale;
+  token: string;
   versions: VersionOption[];
 };
 
 export function VersionSelect({
-  token,
   currentVersionId,
+  labels,
+  locale,
+  token,
   versions
 }: VersionSelectProps) {
   const router = useRouter();
@@ -64,13 +74,13 @@ export function VersionSelect({
     setPendingVersionId(versionId);
     setIsOpen(false);
     startTransition(() => {
-      router.push(`/docs/${token}?version=${versionId}`);
+      router.push(`${localizedPath(locale, `/docs/${token}`)}?version=${versionId}`);
     });
   }
 
   return (
     <div className="version-select" ref={versionSelectRef}>
-      <span className="version-select-label">版本</span>
+      <span className="version-select-label">{labels.version}</span>
       <button
         aria-busy={isLoading}
         aria-expanded={isOpen}
@@ -79,14 +89,14 @@ export function VersionSelect({
         type="button"
         onClick={() => setIsOpen((value) => !value)}
       >
-        <span className="version-select-trigger-text">{selectedVersion?.label ?? "选择版本"}</span>
+        <span className="version-select-trigger-text">{selectedVersion?.label ?? labels.selectVersion}</span>
         <span
           aria-hidden="true"
           className={isLoading ? "version-select-spinner" : "version-select-caret"}
         />
       </button>
       {isOpen ? (
-        <div className="version-select-menu" aria-label="切换版本">
+        <div className="version-select-menu" aria-label={labels.switchVersion}>
           {versions.map((version) => {
             const isSelected = version.id === selectedVersionId;
 
@@ -109,7 +119,7 @@ export function VersionSelect({
       ) : null}
       {isLoading ? (
         <span className="version-select-status" role="status" aria-live="polite">
-          加载中
+          {labels.loading}
         </span>
       ) : null}
     </div>

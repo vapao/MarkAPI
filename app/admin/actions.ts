@@ -4,12 +4,14 @@ import crypto from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { clearAdminSession, requireAdmin, setAdminSession } from "@/lib/auth";
+import { localizedPath, readFormLocale, type Locale } from "@/lib/locales";
+import type { AdminErrorCode } from "@/lib/messages";
 import { prisma } from "@/lib/prisma";
 
 const MAX_MARKDOWN_BYTES = 2 * 1024 * 1024;
 
-function redirectWithError(path: string, message: string): never {
-  redirect(`${path}?error=${encodeURIComponent(message)}`);
+function redirectWithError(locale: Locale, path: string, error: AdminErrorCode): never {
+  redirect(`${localizedPath(locale, path)}?error=${encodeURIComponent(error)}`);
 }
 
 function readRequiredText(formData: FormData, key: string) {
@@ -40,6 +42,7 @@ async function createUniqueSlug(name: string) {
 }
 
 export async function loginAction(formData: FormData) {
+  const locale = readFormLocale(formData);
   const expectedPassword = process.env.ADMIN_PASSWORD;
 
   if (!expectedPassword) {
@@ -51,25 +54,29 @@ export async function loginAction(formData: FormData) {
   }
 
   if (readRequiredText(formData, "password") !== expectedPassword) {
-    redirectWithError("/admin/login", "管理密码不正确");
+    redirectWithError(locale, "/admin/login", "invalidPassword");
   }
 
   await setAdminSession();
-  redirect("/admin/projects");
+  redirect(localizedPath(locale, "/admin/projects"));
 }
 
-export async function logoutAction() {
+export async function logoutAction(formData: FormData) {
+  const locale = readFormLocale(formData);
+
   await clearAdminSession();
-  redirect("/admin/login");
+  redirect(localizedPath(locale, "/admin/login"));
 }
 
 export async function createProjectAction(formData: FormData) {
-  await requireAdmin();
+  const locale = readFormLocale(formData);
+
+  await requireAdmin(locale);
 
   const name = readRequiredText(formData, "name");
 
   if (!name) {
-    redirectWithError("/admin/projects/new", "项目名称不能为空");
+    redirectWithError(locale, "/admin/projects/new", "emptyProjectName");
   }
 
   const project = await prisma.project.create({
@@ -81,12 +88,14 @@ export async function createProjectAction(formData: FormData) {
     select: { id: true }
   });
 
-  revalidatePath("/admin/projects");
-  redirect(`/admin/projects/${project.id}`);
+  revalidatePath(localizedPath(locale, "/admin/projects"));
+  redirect(localizedPath(locale, `/admin/projects/${project.id}`));
 }
 
 export async function uploadVersionAction(projectId: number, formData: FormData) {
-  await requireAdmin();
+  const locale = readFormLocale(formData);
+
+  await requireAdmin(locale);
 
   const project = await prisma.project.findUnique({
     where: { id: projectId },
@@ -94,22 +103,22 @@ export async function uploadVersionAction(projectId: number, formData: FormData)
   });
 
   if (!project) {
-    redirect("/admin/projects");
+    redirect(localizedPath(locale, "/admin/projects"));
   }
 
   const file = formData.get("file");
   const redirectPath = `/admin/projects/${projectId}`;
 
   if (!(file instanceof File) || file.size === 0) {
-    redirectWithError(redirectPath, "请选择 Markdown 文件");
+    redirectWithError(locale, redirectPath, "missingMarkdownFile");
   }
 
   if (!file.name.toLowerCase().endsWith(".md")) {
-    redirectWithError(redirectPath, "只允许上传 .md 文件");
+    redirectWithError(locale, redirectPath, "invalidMarkdownFile");
   }
 
   if (file.size > MAX_MARKDOWN_BYTES) {
-    redirectWithError(redirectPath, "Markdown 文件不能超过 2MB");
+    redirectWithError(locale, redirectPath, "markdownTooLarge");
   }
 
   await prisma.documentVersion.create({
@@ -120,7 +129,26 @@ export async function uploadVersionAction(projectId: number, formData: FormData)
     }
   });
 
-  revalidatePath("/admin/projects");
-  revalidatePath(redirectPath);
-  redirect(redirectPath);
+  revalidatePath(localizedPath(locale, "/admin/projects"));
+  revalidatePath(localizedPath(locale, redirectPath));
+  redirect(localizedPath(locale, redirectPath));
+}
+
+export async function updateProjectPublicAccessAction(projectId: number, formData: FormData) {
+  const locale = readFormLocale(formData);
+
+  await requireAdmin(locale);
+
+  const project = await prisma.project.update({
+    where: { id: projectId },
+    data: {
+      allowPublicVersionHistory: formData.get("allowPublicVersionHistory") === "on"
+    },
+    select: { shareToken: true }
+  });
+
+  revalidatePath(localizedPath(locale, "/admin/projects"));
+  revalidatePath(localizedPath(locale, `/admin/projects/${projectId}`));
+  revalidatePath(localizedPath(locale, `/docs/${project.shareToken}`));
+  redirect(localizedPath(locale, `/admin/projects/${projectId}`));
 }

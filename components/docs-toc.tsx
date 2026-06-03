@@ -6,9 +6,15 @@ import type { TocItem } from "@/lib/markdown";
 type DocsTocProps = {
   collapsible?: boolean;
   items: TocItem[];
+  labels: {
+    empty: string;
+    expand: string;
+    compact: string;
+    title: string;
+  };
 };
 
-export function DocsToc({ collapsible = false, items }: DocsTocProps) {
+export function DocsToc({ collapsible = false, items, labels }: DocsTocProps) {
   const tocNavRef = useRef<HTMLElement>(null);
   const [activeId, setActiveId] = useState(items[0]?.id ?? "");
   const [isCompact, setIsCompact] = useState(false);
@@ -120,10 +126,10 @@ export function DocsToc({ collapsible = false, items }: DocsTocProps) {
       <>
         {collapsible ? (
           <div className="toc-heading">
-            <h2>目录</h2>
+            <h2>{labels.title}</h2>
           </div>
         ) : null}
-        <p className="empty-text">当前文档没有二级或三级标题。</p>
+        <p className="empty-text">{labels.empty}</p>
       </>
     );
   }
@@ -132,12 +138,12 @@ export function DocsToc({ collapsible = false, items }: DocsTocProps) {
     <>
       {collapsible ? (
         <div className="toc-heading">
-          <h2>目录</h2>
+          <h2>{labels.title}</h2>
           {showToggle ? (
             <button
-              aria-label={isCompact ? "展开全部二级目录" : "只显示一级目录"}
+              aria-label={isCompact ? labels.expand : labels.compact}
               className={`toc-toggle${isCompact ? " toc-toggle-active" : ""}`}
-              title={isCompact ? "展开全部二级目录" : "只显示一级目录"}
+              title={isCompact ? labels.expand : labels.compact}
               type="button"
               onClick={handleToggleCompact}
             >
@@ -146,7 +152,7 @@ export function DocsToc({ collapsible = false, items }: DocsTocProps) {
           ) : null}
         </div>
       ) : null}
-      <nav aria-label="目录" className="toc-list" ref={tocNavRef}>
+      <nav aria-label={labels.title} className="toc-list" ref={tocNavRef}>
         {visibleItems.map((item) => {
           const className = [
             "toc-item",

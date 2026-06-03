@@ -7,9 +7,11 @@ import remarkGfm from "remark-gfm";
 import { CopyableText } from "@/components/copyable-text";
 import { JsonCodeBlock } from "@/components/json-code-block";
 import { splitMarkdownSections } from "@/lib/markdown";
+import type { Messages } from "@/lib/messages";
 
 type MarkdownBodyProps = {
   content: string;
+  labels: Messages["components"]["copy"];
 };
 
 function nodeText(children: ReactNode): string {
@@ -72,7 +74,7 @@ function isCopyableTableValue(value: string) {
   );
 }
 
-function copyableTrailingToken(children: ReactNode, label: string) {
+function copyableTrailingToken(children: ReactNode, label: string, title: string) {
   const text = nodeText(children);
   const match = text.match(/^(.+\s)([a-z][a-zA-Z0-9_]*(?:\[\])?(?:\.[a-zA-Z0-9_]+(?:\[\])?)*)$/);
 
@@ -83,14 +85,14 @@ function copyableTrailingToken(children: ReactNode, label: string) {
   return (
     <>
       {match[1]}
-      <CopyableText className="copy-token heading-copy-token" label={label} value={match[2]}>
+      <CopyableText className="copy-token heading-copy-token" label={label} title={title} value={match[2]}>
         {match[2]}
       </CopyableText>
     </>
   );
 }
 
-export function MarkdownBody({ content }: MarkdownBodyProps) {
+export function MarkdownBody({ content, labels }: MarkdownBodyProps) {
   const slugger = new GithubSlugger();
   const components: Components = {
     h1: ({ children, ...props }) => (
@@ -105,12 +107,12 @@ export function MarkdownBody({ content }: MarkdownBodyProps) {
     ),
     h3: ({ children, ...props }) => (
       <h3 {...props} id={slugger.slug(nodeText(children))}>
-        {copyableTrailingToken(children, "复制字段名")}
+        {copyableTrailingToken(children, labels.copyField, labels.clickToCopy)}
       </h3>
     ),
     h4: ({ children, ...props }) => (
       <h4 {...props} id={slugger.slug(nodeText(children))}>
-        {copyableTrailingToken(children, "复制字段名")}
+        {copyableTrailingToken(children, labels.copyField, labels.clickToCopy)}
       </h4>
     ),
     p: ({ children, ...props }) => {
@@ -123,7 +125,7 @@ export function MarkdownBody({ content }: MarkdownBodyProps) {
         return (
           <p {...props} className="endpoint-line">
             <span className="endpoint-method">{method}</span>{" "}
-            <CopyableText className="copy-token endpoint-path" label="复制接口 URL" value={path}>
+            <CopyableText className="copy-token endpoint-path" label={labels.copyEndpoint} title={labels.clickToCopy} value={path}>
               {path}
             </CopyableText>
           </p>
@@ -136,7 +138,7 @@ export function MarkdownBody({ content }: MarkdownBodyProps) {
       const code = nodeText(children).replace(/\n$/, "");
 
       if (codeLanguage(children) === "json") {
-        return <JsonCodeBlock code={code} />;
+        return <JsonCodeBlock code={code} labels={labels} />;
       }
 
       return <pre {...props}>{children}</pre>;
@@ -152,7 +154,7 @@ export function MarkdownBody({ content }: MarkdownBodyProps) {
       return (
         <td {...props}>
           {isCopyableTableValue(text) ? (
-            <CopyableText label="复制文本" value={text.trim()}>
+            <CopyableText label={labels.copyText} title={labels.clickToCopy} value={text.trim()}>
               {children}
             </CopyableText>
           ) : (
