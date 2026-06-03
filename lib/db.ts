@@ -1,9 +1,7 @@
 import { mkdirSync } from "node:fs";
 import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath } from "node:url";
-import Database from "better-sqlite3";
-
-type SqlDate = number | string;
 
 type ProjectRow = {
   id: number;
@@ -11,8 +9,8 @@ type ProjectRow = {
   slug: string;
   shareToken: string;
   allowPublicVersionHistory: number | boolean;
-  createdAt: SqlDate;
-  updatedAt: SqlDate;
+  createdAt: number;
+  updatedAt: number;
 };
 
 type DocumentVersionRow = {
@@ -20,7 +18,7 @@ type DocumentVersionRow = {
   projectId: number;
   content: string;
   note: string | null;
-  createdAt: SqlDate;
+  createdAt: number;
 };
 
 export type Project = {
@@ -45,10 +43,10 @@ export type ProjectWithVersions = Project & {
   versions: DocumentVersion[];
 };
 
-let database: Database.Database | undefined;
+let database: DatabaseSync | undefined;
 
 const globalForSqlite = globalThis as typeof globalThis & {
-  markapiDb?: Database.Database;
+  markapiDb?: DatabaseSync;
 };
 
 function getDatabasePath() {
@@ -72,10 +70,6 @@ function getDatabasePath() {
 
   if (filePath.startsWith("data/")) {
     return getDataPath(filePath.slice("data/".length));
-  }
-
-  if (filePath.startsWith("../data/")) {
-    return getDataPath(filePath.slice("../data/".length));
   }
 
   throw new Error("Relative DATABASE_URL paths must point under ./data or use an absolute file URL");
@@ -102,8 +96,8 @@ function getDb() {
   const databasePath = getDatabasePath();
   mkdirSync(path.dirname(databasePath), { recursive: true });
 
-  const db = new Database(databasePath);
-  db.pragma("foreign_keys = ON");
+  const db = new DatabaseSync(databasePath);
+  db.exec("PRAGMA foreign_keys = ON");
   ensureSchema(db);
 
   database = db;
@@ -115,7 +109,7 @@ function getDb() {
   return db;
 }
 
-function ensureSchema(db: Database.Database) {
+function ensureSchema(db: DatabaseSync) {
   db.exec(`
     CREATE TABLE IF NOT EXISTS "Project" (
       "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -141,24 +135,6 @@ function ensureSchema(db: Database.Database) {
     CREATE UNIQUE INDEX IF NOT EXISTS "Project_slug_key" ON "Project"("slug");
     CREATE UNIQUE INDEX IF NOT EXISTS "Project_shareToken_key" ON "Project"("shareToken");
   `);
-
-  const projectColumns = db.prepare('PRAGMA table_info("Project")').all() as Array<{ name: string }>;
-
-  if (!projectColumns.some((column) => column.name === "allowPublicVersionHistory")) {
-    db.exec('ALTER TABLE "Project" ADD COLUMN "allowPublicVersionHistory" BOOLEAN NOT NULL DEFAULT true');
-  }
-}
-
-function toDate(value: SqlDate) {
-  const date = typeof value === "number"
-    ? new Date(value)
-    : new Date(value.includes("T") ? value : `${value.replace(" ", "T")}Z`);
-
-  if (Number.isNaN(date.getTime())) {
-    throw new Error(`Invalid SQLite date value: ${String(value)}`);
-  }
-
-  return date;
 }
 
 function toProject(row: ProjectRow): Project {
@@ -168,8 +144,8 @@ function toProject(row: ProjectRow): Project {
     slug: row.slug,
     shareToken: row.shareToken,
     allowPublicVersionHistory: row.allowPublicVersionHistory === true || row.allowPublicVersionHistory === 1,
-    createdAt: toDate(row.createdAt),
-    updatedAt: toDate(row.updatedAt)
+    createdAt: new Date(row.createdAt),
+    updatedAt: new Date(row.updatedAt)
   };
 }
 
@@ -179,7 +155,7 @@ function toDocumentVersion(row: DocumentVersionRow): DocumentVersion {
     projectId: row.projectId,
     content: row.content,
     note: row.note,
-    createdAt: toDate(row.createdAt)
+    createdAt: new Date(row.createdAt)
   };
 }
 
