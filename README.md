@@ -39,10 +39,9 @@ It is designed for small teams and internal projects that already maintain API d
 
 ```bash
 cp .env.example .env
-docker compose up -d
 ```
 
-Before starting, edit `.env` and set at least:
+Edit `.env` and set at least:
 
 ```env
 ADMIN_PASSWORD=replace-with-admin-password
@@ -51,9 +50,21 @@ DATABASE_URL=file:./data/markapi.db
 ALLOW_HTTP_ADMIN_LOGIN=1
 ```
 
+You can generate a `SESSION_SECRET` with:
+
+```bash
+openssl rand -hex 32
+```
+
 `ALLOW_HTTP_ADMIN_LOGIN=1` is suitable for local or temporary HTTP usage. Change it to `ALLOW_HTTP_ADMIN_LOGIN=0` after deploying behind HTTPS.
 
 `DATABASE_URL` already points to a local SQLite file by default and usually does not need to be changed.
+
+Then start the service:
+
+```bash
+docker compose up -d
+```
 
 The default service URL is:
 
