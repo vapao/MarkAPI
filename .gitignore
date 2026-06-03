@@ -6,6 +6,7 @@ data/*.db-journal
 .env
 *.log
 tsconfig.tsbuildinfo
+.idea/
 AGENTS.md
 IMPLEMENTATION_PLAN.md
 api-template.md
