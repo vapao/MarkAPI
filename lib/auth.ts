@@ -28,7 +28,7 @@ function getSessionSecret() {
 function shouldUseSecureCookie() {
   return (
     process.env.NODE_ENV === "production" &&
-    process.env.ALLOW_INSECURE_ADMIN_COOKIE !== "1"
+    process.env.ALLOW_HTTP_ADMIN_LOGIN !== "1"
   );
 }
 

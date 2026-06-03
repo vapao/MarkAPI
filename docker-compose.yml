@@ -6,8 +6,8 @@ services:
     environment:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD}
       SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET}
-      DATABASE_URL: file:../data/markapi.db
-      ALLOW_INSECURE_ADMIN_COOKIE: ${ALLOW_INSECURE_ADMIN_COOKIE:-1}
+      DATABASE_URL: ${DATABASE_URL:-file:../data/markapi.db}
+      ALLOW_HTTP_ADMIN_LOGIN: ${ALLOW_HTTP_ADMIN_LOGIN:-1}
     volumes:
       - markapi-data:/app/data
 
