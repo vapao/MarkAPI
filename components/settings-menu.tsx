@@ -3,7 +3,8 @@
 import { Check, Monitor, Moon, Settings, Sun } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { type ReactNode, useEffect, useRef, useState, useSyncExternalStore, useTransition } from "react";
+import { type ReactNode, useRef, useState, useSyncExternalStore, useTransition } from "react";
+import { useDismissablePopover } from "@/components/use-dismissable-popover";
 import { isLocale, SUPPORTED_LOCALES, type Locale } from "@/lib/locales";
 import type { Messages } from "@/lib/messages";
 
@@ -102,31 +103,7 @@ export function SettingsMenu({ children, labels, locale }: SettingsMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    function handlePointerDown(event: PointerEvent) {
-      if (!menuRef.current?.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    }
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setIsOpen(false);
-      }
-    }
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen]);
+  useDismissablePopover(isOpen, menuRef, () => setIsOpen(false));
 
   function switchLocale(nextLocale: Locale) {
     if (nextLocale === locale) {

@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
+import { useDismissablePopover } from "@/components/use-dismissable-popover";
 import { localizedPath, type Locale } from "@/lib/locales";
 
 type VersionOption = {
@@ -38,31 +39,7 @@ export function VersionSelect({
   const selectedVersion = versions.find((version) => version.id === selectedVersionId);
   const isLoading = isPending || pendingVersionId !== null;
 
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    function handlePointerDown(event: PointerEvent) {
-      if (!versionSelectRef.current?.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    }
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setIsOpen(false);
-      }
-    }
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen]);
+  useDismissablePopover(isOpen, versionSelectRef, () => setIsOpen(false));
 
   function openVersion(versionId: number) {
     if (versionId === currentVersionId) {

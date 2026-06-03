@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useDismissablePopover } from "@/components/use-dismissable-popover";
 import { localizedPath, type Locale } from "@/lib/locales";
 
 const STORAGE_KEY = "markapi:visited-projects";
@@ -147,33 +148,10 @@ export function DocsProjectSwitcher({ currentProject, labels, locale }: DocsProj
     rememberProject({ name, token });
   }, [name, token]);
 
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    function handlePointerDown(event: PointerEvent) {
-      if (!switcherRef.current?.contains(event.target as Node)) {
-        setIsOpen(false);
-        setConfirmingToken(null);
-      }
-    }
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setIsOpen(false);
-        setConfirmingToken(null);
-      }
-    }
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen]);
+  useDismissablePopover(isOpen, switcherRef, () => {
+    setIsOpen(false);
+    setConfirmingToken(null);
+  });
 
   return (
     <div className="project-switcher" ref={switcherRef}>

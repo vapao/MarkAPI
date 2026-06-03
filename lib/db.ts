@@ -21,6 +21,23 @@ type DocumentVersionRow = {
   createdAt: number;
 };
 
+type ProjectWithLatestVersionRow = ProjectRow & (
+  | {
+      versionId: null;
+      versionProjectId: null;
+      versionContent: null;
+      versionNote: null;
+      versionCreatedAt: null;
+    }
+  | {
+      versionId: number;
+      versionProjectId: number;
+      versionContent: string;
+      versionNote: string | null;
+      versionCreatedAt: number;
+    }
+);
+
 export type Project = {
   id: number;
   name: string;
@@ -242,16 +259,49 @@ export function getProjectWithVersionsByShareToken(shareToken: string): ProjectW
 export function getProjectsWithLatestVersion(): ProjectWithVersions[] {
   const projects = getDb()
     .prepare(`
-      SELECT "id", "name", "slug", "shareToken", "allowPublicVersionHistory", "createdAt", "updatedAt"
-      FROM "Project"
-      ORDER BY "createdAt" DESC
+      SELECT
+        p."id",
+        p."name",
+        p."slug",
+        p."shareToken",
+        p."allowPublicVersionHistory",
+        p."createdAt",
+        p."updatedAt",
+        v."id" AS "versionId",
+        v."projectId" AS "versionProjectId",
+        v."content" AS "versionContent",
+        v."note" AS "versionNote",
+        v."createdAt" AS "versionCreatedAt"
+      FROM "Project" p
+      LEFT JOIN "DocumentVersion" v ON v."id" = (
+        SELECT latest."id"
+        FROM "DocumentVersion" latest
+        WHERE latest."projectId" = p."id"
+        ORDER BY latest."createdAt" DESC
+        LIMIT 1
+      )
+      ORDER BY p."createdAt" DESC
     `)
-    .all() as ProjectRow[];
+    .all() as ProjectWithLatestVersionRow[];
 
-  return projects.map((project) => ({
-    ...toProject(project),
-    versions: getProjectVersions(project.id, 1)
-  }));
+  return projects.map((project) => {
+    const versions = project.versionId === null
+      ? []
+      : [
+          toDocumentVersion({
+            id: project.versionId,
+            projectId: project.versionProjectId,
+            content: project.versionContent,
+            note: project.versionNote,
+            createdAt: project.versionCreatedAt
+          })
+        ];
+
+    return {
+      ...toProject(project),
+      versions
+    };
+  });
 }
 
 export function getProjectWithVersionsById(id: number): ProjectWithVersions | null {
