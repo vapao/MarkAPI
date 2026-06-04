@@ -46,7 +46,6 @@ cp .env.example .env
 ```env
 ADMIN_PASSWORD=replace-with-admin-password
 SESSION_SECRET=replace-with-long-random-secret
-DATABASE_URL=file:./data/markapi.db
 ALLOW_HTTP_ADMIN_LOGIN=1
 ```
 
@@ -97,7 +96,7 @@ MarkAPI 直接渲染 Markdown 文件，不要求专有格式。
 | --- | --- | --- |
 | `ADMIN_PASSWORD` | 是 | 管理后台登录密码 |
 | `SESSION_SECRET` | 是 | 会话签名密钥，生产环境必须使用足够长的随机值 |
-| `DATABASE_URL` | 是 | SQLite 数据库地址，默认示例已提供，通常不需要修改 |
+| `DATABASE_URL` | 否 | SQLite 数据库地址，默认值为 `file:./data/markapi.db` |
 | `ALLOW_HTTP_ADMIN_LOGIN` | 否 | 是否允许生产环境下通过 HTTP 登录管理后台 |
 
 默认 `.env.example`：
@@ -109,7 +108,7 @@ DATABASE_URL=file:./data/markapi.db
 ALLOW_HTTP_ADMIN_LOGIN=1
 ```
 
-通常不需要修改 `DATABASE_URL`。这个默认值会把 SQLite 数据库放到项目的 `data/` 目录下。
+通常不需要修改 `DATABASE_URL`。这个默认值会把 SQLite 数据库放到项目的 `data/` 目录下。如果要自定义相对路径，请保持在 `data/` 目录内，例如 `file:./data/markapi.db` 或 `file:markapi.db`。
 
 ## 安全说明
 

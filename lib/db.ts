@@ -67,15 +67,15 @@ const globalForSqlite = globalThis as typeof globalThis & {
 };
 
 function getDatabasePath() {
-  const databaseUrl = process.env.DATABASE_URL ?? "file:./data/markapi.db";
+  const databaseUrl = process.env.DATABASE_URL?.trim() || "file:./data/markapi.db";
 
   if (!databaseUrl.startsWith("file:")) {
     throw new Error("DATABASE_URL must be a file: SQLite URL");
   }
 
-  const filePath = databaseUrl.startsWith("file://")
+  const filePath = (databaseUrl.startsWith("file://")
     ? fileURLToPath(databaseUrl)
-    : decodeURIComponent(databaseUrl.slice("file:".length));
+    : decodeURIComponent(databaseUrl.slice("file:".length))).trim();
 
   if (path.isAbsolute(filePath)) {
     return filePath;
@@ -87,6 +87,12 @@ function getDatabasePath() {
 
   if (filePath.startsWith("data/")) {
     return getDataPath(filePath.slice("data/".length));
+  }
+
+  const localFilePath = filePath.startsWith("./") ? filePath.slice(2) : filePath;
+
+  if (localFilePath && !localFilePath.includes("/") && !localFilePath.includes("\\")) {
+    return getDataPath(localFilePath);
   }
 
   throw new Error("Relative DATABASE_URL paths must point under ./data or use an absolute file URL");

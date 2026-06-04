@@ -46,7 +46,6 @@ Edit `.env` and set at least:
 ```env
 ADMIN_PASSWORD=replace-with-admin-password
 SESSION_SECRET=replace-with-long-random-secret
-DATABASE_URL=file:./data/markapi.db
 ALLOW_HTTP_ADMIN_LOGIN=1
 ```
 
@@ -97,7 +96,7 @@ MarkAPI renders Markdown directly and does not require a proprietary document fo
 | --- | --- | --- |
 | `ADMIN_PASSWORD` | Yes | Password for the admin UI |
 | `SESSION_SECRET` | Yes | Secret used to sign admin sessions. Use a long random value in production |
-| `DATABASE_URL` | Yes | SQLite database URL. The provided default usually does not need to be changed |
+| `DATABASE_URL` | No | SQLite database URL. Defaults to `file:./data/markapi.db` |
 | `ALLOW_HTTP_ADMIN_LOGIN` | No | Allows admin login over HTTP in production-like deployments |
 
 Default `.env.example`:
@@ -109,7 +108,7 @@ DATABASE_URL=file:./data/markapi.db
 ALLOW_HTTP_ADMIN_LOGIN=1
 ```
 
-You usually do not need to change `DATABASE_URL`. The default value stores the SQLite database under the project `data/` directory.
+You usually do not need to change `DATABASE_URL`. The default value stores the SQLite database under the project `data/` directory. If you customize a relative SQLite path, keep it under `data/`, for example `file:./data/markapi.db` or `file:markapi.db`.
 
 ## Security Notes
 
