@@ -21,7 +21,7 @@
 
 ## Common Data Definitions
 
-### Currency currency
+### Currency
 
 | Value | Description |
 |---|---|
@@ -30,7 +30,7 @@
 | EUR | Euro |
 | JPY | Japanese yen |
 
-### Product status product.status
+### Product status
 
 | Value | Description |
 |---|---|
@@ -39,7 +39,7 @@
 | OFF_SALE | Off sale |
 | SOLD_OUT | Sold out |
 
-### Order status order.status
+### Order status
 
 | Value | Description |
 |---|---|
@@ -51,7 +51,7 @@
 | CANCELLED | Cancelled |
 | CLOSED | Closed |
 
-### Payment type pay_type
+### Payment type
 
 | Value | Description |
 |---|---|
@@ -60,7 +60,7 @@
 | BALANCE | Account balance |
 | BANK_TRANSFER | Bank transfer |
 
-### Payment status pay_status
+### Payment status
 
 | Value | Description |
 |---|---|
@@ -71,7 +71,7 @@
 | REFUNDED | Refunded |
 | FAILED | Failed |
 
-### Delivery type delivery_type
+### Delivery type
 
 | Value | Description |
 |---|---|
@@ -80,7 +80,7 @@
 | STORE_PICKUP | Store pickup |
 | CROSS_BORDER | Cross-border shipping |
 
-### After-sales type after_sale.type
+### After-sales type
 
 | Value | Description |
 |---|---|
@@ -88,7 +88,7 @@
 | RETURN_AND_REFUND | Return and refund |
 | EXCHANGE | Exchange |
 
-### After-sales status after_sale.status
+### After-sales status
 
 | Value | Description |
 |---|---|
@@ -101,7 +101,7 @@
 | COMPLETED | Completed |
 | CANCELLED | Cancelled |
 
-### Coupon status coupon.status
+### Coupon status
 
 | Value | Description |
 |---|---|
@@ -110,7 +110,7 @@
 | EXPIRED | Expired |
 | LOCKED | Locked |
 
-### Inventory change type inventory.change_type
+### Inventory change type
 
 | Value | Description |
 |---|---|
@@ -120,7 +120,7 @@
 | SHIP_OUT | Shipment deduction |
 | MANUAL_ADJUST | Manual adjustment |
 
-### Notification event notification.event_type
+### Notification event
 
 | Value | Title | Message template |
 |---|---|---|

@@ -1,30 +1,38 @@
 # MarkAPI
 
-[English](README.md)
+[English](README.md) · [在线演示](https://markapi.hxkit.com/zh/docs/ABeyng_ShD-FyzF5PZXGOlYC2rNRpObn)
 
-MarkAPI 是一个自托管 Markdown API 文档浏览器。你可以上传一份完整的 `.md` API 文档，生成带目录、搜索、版本历史和分享链接的在线文档页。
+MarkAPI 是一个面向小团队和内部项目的自托管 Markdown API 文档浏览系统。
 
-它适合已经用 Markdown 维护接口文档、但不想引入复杂文档平台的小团队或内部项目。
+你可以上传一份完整的 `.md` 文件，把它发布成带目录、搜索、版本历史和稳定分享链接的只读在线文档页。MarkAPI 刻意保持轻量：它解决 Markdown API 文档的浏览、发布和版本留存问题，不试图替代完整开发者门户或团队协作平台。
+
+![MarkAPI 文档浏览页](docs/assets/markapi-docs-browser.zh-CN.jpg)
+
+## 在线演示
+
+打开只读示例文档：
+
+[MMall API 在线演示](https://markapi.hxkit.com/zh/docs/ABeyng_ShD-FyzF5PZXGOlYC2rNRpObn)
+
+演示站使用样例数据，不提供管理后台试用入口。
 
 ## 功能特性
 
 - 自托管部署，数据保存在自己的 SQLite 数据库中
-- 单管理员密码登录后台
-- 创建和管理多个文档项目
-- 上传 Markdown 文件生成新版本
+- 适合小团队的单管理员密码后台
+- 创建和管理多个文档项目，上传 Markdown 文件生成版本快照
 - 通过不可猜的分享链接公开只读文档
 - 可选择是否允许访客查看历史版本
 - 文档页支持目录、当前文档搜索和版本切换
-- 支持 GitHub Flavored Markdown
+- 支持 GitHub Flavored Markdown，例如表格、任务列表和代码块
 - 自动增强接口文档常见内容，例如接口路径、字段名和 JSON 代码块复制
-- 支持中文和英文界面
-- 支持浅色、深色和跟随系统主题
+- 支持中文和英文界面，支持浅色、深色和跟随系统主题
 - 支持 Docker Compose 快速启动
 
 ## 适合场景
 
 - 团队内部 API 文档浏览
-- 给前端、测试或外部协作方提供稳定的只读文档链接
+- 给前端、测试、客服或可信协作方提供稳定的只读文档链接
 - 保留 Markdown 文档的历史版本
 - 在内网或私有服务器上部署轻量文档站
 
@@ -115,6 +123,8 @@ ALLOW_HTTP_ADMIN_LOGIN=1
 MarkAPI 当前使用单管理员密码模型，适合小团队或内部部署。
 
 公开文档通过不可猜的 `shareToken` 链接访问。它不是登录鉴权系统，拥有链接的人即可访问对应文档。
+
+如果要公开在线演示，请只使用样例数据，并直接链接到只读文档页。不要把管理后台作为公开试用环境。
 
 生产环境建议使用 HTTPS，并设置：
 

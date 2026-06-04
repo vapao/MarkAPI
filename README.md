@@ -1,30 +1,38 @@
 # MarkAPI
 
-[简体中文](README.zh-CN.md)
+[简体中文](README.zh-CN.md) · [Online demo](https://markapi.hxkit.com/en/docs/ABeyng_ShD-FyzF5PZXGOlYC2rNRpObn)
 
-MarkAPI is a self-hosted Markdown API documentation browser. Upload a complete `.md` API document and turn it into an online documentation page with a table of contents, search, version history, and share links.
+MarkAPI is a self-hosted Markdown API documentation browser for teams that already maintain API docs in Markdown.
 
-It is designed for small teams and internal projects that already maintain API documentation in Markdown and do not want to adopt a heavy documentation platform.
+Upload a complete `.md` file and publish it as a versioned, searchable, read-only documentation page with a stable share link. MarkAPI is intentionally small: it focuses on internal API documentation browsing instead of trying to become a full developer portal or team workspace.
+
+![MarkAPI documentation browser](docs/assets/markapi-docs-browser.jpg)
+
+## Online Demo
+
+Open the read-only sample documentation:
+
+[MMall API demo](https://markapi.hxkit.com/en/docs/ABeyng_ShD-FyzF5PZXGOlYC2rNRpObn)
+
+The demo uses sample data and does not provide admin access.
 
 ## Features
 
 - Self-hosted deployment with data stored in your own SQLite database
-- Single admin password for the management UI
-- Multiple documentation projects
-- Markdown uploads that create versioned document snapshots
+- Simple single-admin-password management UI for small teams
+- Multiple documentation projects with versioned Markdown uploads
 - Read-only public documentation through unguessable share links
 - Optional public access to version history
-- Documentation pages with table of contents, in-page search, and version switching
-- GitHub Flavored Markdown support
+- Documentation pages with a table of contents, in-page search, and version switching
+- GitHub Flavored Markdown support, including tables, task lists, and code blocks
 - API-documentation enhancements for endpoint paths, field names, and JSON code block copying
-- Chinese and English UI
-- Light, dark, and system themes
+- Chinese and English UI with light, dark, and system themes
 - Docker Compose quick start
 
 ## Good Fit
 
 - Internal API documentation
-- Stable read-only documentation links for frontend, QA, customer success, or external collaborators
+- Stable read-only documentation links for frontend, QA, customer success, or trusted collaborators
 - Keeping historical versions of Markdown API documents
 - Lightweight documentation sites deployed on private servers or internal networks
 
@@ -115,6 +123,8 @@ You usually do not need to change `DATABASE_URL`. The default value stores the S
 MarkAPI currently uses a single-admin-password model. It is intended for small teams and internal deployments.
 
 Public documentation is available through unguessable `shareToken` links. This is not a login-based authorization system: anyone with the link can access the corresponding document.
+
+If you publish a public demo, use sample data only and link directly to a read-only documentation page. Do not expose admin access as a public trial environment.
 
 For production, use HTTPS and set:
 

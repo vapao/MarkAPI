@@ -1,12 +1,12 @@
 # Security Policy
 
-如果你发现 MarkAPI 的安全问题，请不要先公开披露。
+If you discover a security issue in MarkAPI, please do not disclose it publicly before reporting it.
 
-请通过 GitHub 私有安全报告或仓库维护者公开提供的联系方式提交问题，并尽量包含：
+Report the issue through GitHub private security reporting or through a public contact method provided by the repository maintainers. Please include as much of the following information as possible:
 
-- 受影响版本或提交
-- 复现步骤
-- 影响范围
-- 你建议的修复方向
+- Affected version or commit
+- Reproduction steps
+- Impact scope
+- Your suggested fix direction
 
-MarkAPI 默认使用单管理员密码和不可猜分享链接。公开部署时必须设置强 `ADMIN_PASSWORD` 和 `SESSION_SECRET`，并优先通过 HTTPS 访问管理后台。
+MarkAPI uses a single-admin-password model and unguessable share links by default. Public deployments must use strong `ADMIN_PASSWORD` and `SESSION_SECRET` values, and admin access should preferably happen over HTTPS.

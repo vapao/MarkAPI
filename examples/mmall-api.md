@@ -21,7 +21,7 @@
 
 ## 公共数据定义
 
-### 币种 currency
+### 币种
 
 | 枚举值 | 说明 |
 |---|---|
@@ -30,7 +30,7 @@
 | EUR | 欧元 |
 | JPY | 日元 |
 
-### 商品状态 product.status
+### 商品状态
 
 | 枚举值 | 说明 |
 |---|---|
@@ -39,7 +39,7 @@
 | OFF_SALE | 已下架 |
 | SOLD_OUT | 已售罄 |
 
-### 订单状态 order.status
+### 订单状态
 
 | 枚举值 | 说明 |
 |---|---|
@@ -51,7 +51,7 @@
 | CANCELLED | 已取消 |
 | CLOSED | 已关闭 |
 
-### 支付方式 pay_type
+### 支付方式
 
 | 枚举值 | 说明 |
 |---|---|
@@ -60,7 +60,7 @@
 | BALANCE | 余额支付 |
 | BANK_TRANSFER | 对公转账 |
 
-### 支付状态 pay_status
+### 支付状态
 
 | 枚举值 | 说明 |
 |---|---|
@@ -71,7 +71,7 @@
 | REFUNDED | 已退款 |
 | FAILED | 支付失败 |
 
-### 配送方式 delivery_type
+### 配送方式
 
 | 枚举值 | 说明 |
 |---|---|
@@ -80,7 +80,7 @@
 | STORE_PICKUP | 门店自提 |
 | CROSS_BORDER | 跨境直邮 |
 
-### 售后类型 after_sale.type
+### 售后类型
 
 | 枚举值 | 说明 |
 |---|---|
@@ -88,7 +88,7 @@
 | RETURN_AND_REFUND | 退货退款 |
 | EXCHANGE | 换货 |
 
-### 售后状态 after_sale.status
+### 售后状态
 
 | 枚举值 | 说明 |
 |---|---|
@@ -101,7 +101,7 @@
 | COMPLETED | 已完成 |
 | CANCELLED | 已取消 |
 
-### 优惠券状态 coupon.status
+### 优惠券状态
 
 | 枚举值 | 说明 |
 |---|---|
@@ -110,7 +110,7 @@
 | EXPIRED | 已过期 |
 | LOCKED | 已锁定 |
 
-### 库存变更类型 inventory.change_type
+### 库存变更类型
 
 | 枚举值 | 说明 |
 |---|---|
@@ -120,7 +120,7 @@
 | SHIP_OUT | 发货扣减 |
 | MANUAL_ADJUST | 人工调整 |
 
-### 通知事件 notification.event_type
+### 通知事件
 
 | 枚举值 | 标题 | 内容模板 |
 |---|---|---|
