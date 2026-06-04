@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, type ReactNode, useState } from "react";
+import { Check, Copy } from "lucide-react";
 import { writeClipboardText } from "@/lib/client-clipboard";
 
 type JsonValue =
@@ -15,6 +16,8 @@ type JsonCodeBlockProps = {
   code: string;
   labels: {
     clickToCopy: string;
+    copied: string;
+    copyCode: string;
     copyField: string;
   };
 };
@@ -28,17 +31,47 @@ function jsonString(value: string) {
 }
 
 export function JsonCodeBlock({ code, labels }: JsonCodeBlockProps) {
+  const [copiedBlock, setCopiedBlock] = useState(false);
   const [copiedFieldId, setCopiedFieldId] = useState("");
   let value: JsonValue;
+
+  async function handleCopyBlock() {
+    try {
+      await writeClipboardText(code);
+      setCopiedBlock(true);
+      window.setTimeout(() => setCopiedBlock(false), 1000);
+    } catch {
+      setCopiedBlock(false);
+    }
+  }
+
+  function renderShell(children: ReactNode) {
+    return (
+      <div className="json-code-shell">
+        <button
+          aria-label={copiedBlock ? labels.copied : labels.copyCode}
+          className={copiedBlock ? "json-code-copy json-code-copy-copied" : "json-code-copy"}
+          onClick={handleCopyBlock}
+          title={copiedBlock ? labels.copied : labels.copyCode}
+          type="button"
+        >
+          {copiedBlock ? (
+            <Check aria-hidden="true" size={15} strokeWidth={2.5} />
+          ) : (
+            <Copy aria-hidden="true" size={15} strokeWidth={2.25} />
+          )}
+        </button>
+        <pre className="json-code-block">
+          <code>{children}</code>
+        </pre>
+      </div>
+    );
+  }
 
   try {
     value = JSON.parse(code) as JsonValue;
   } catch {
-    return (
-      <pre>
-        <code>{code}</code>
-      </pre>
-    );
+    return renderShell(code);
   }
 
   async function handleCopy(key: string, fieldId: string) {
@@ -129,9 +162,5 @@ export function JsonCodeBlock({ code, labels }: JsonCodeBlockProps) {
     );
   }
 
-  return (
-    <pre className="json-code-block">
-      <code>{renderValue(value, 0, "$")}</code>
-    </pre>
-  );
+  return renderShell(renderValue(value, 0, "$"));
 }

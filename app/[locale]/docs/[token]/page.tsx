@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
 import { DocsToc } from "@/components/docs-toc";
 import { DocsProjectSwitcher } from "@/components/docs-project-switcher";
@@ -61,7 +62,17 @@ export default async function DocsPage({ params, searchParams }: DocsPageProps) 
                 {t.admin.projects.title}
               </Link>
             ) : (
-              <span className="docs-breadcrumb-brand">MarkAPI</span>
+              <a
+                aria-label="MarkAPI GitHub"
+                className="docs-breadcrumb-brand docs-breadcrumb-external-link"
+                href="https://github.com/vapao/MarkAPI"
+                rel="noopener noreferrer"
+                target="_blank"
+                title="MarkAPI GitHub"
+              >
+                <span>MarkAPI</span>
+                <ExternalLink aria-hidden="true" size={12} strokeWidth={2.35} />
+              </a>
             )}
             <span aria-hidden="true" className="docs-breadcrumb-separator">/</span>
             <DocsProjectSwitcher

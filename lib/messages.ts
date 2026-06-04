@@ -95,6 +95,7 @@ export const messages = {
         copied: "已复制",
         failed: "复制失败",
         clickToCopy: "点击复制",
+        copyCode: "复制代码",
         copyField: "复制字段名",
         copyEndpoint: "复制接口 URL",
         copyText: "复制文本"
@@ -216,6 +217,7 @@ export const messages = {
         copied: "Copied",
         failed: "Copy failed",
         clickToCopy: "Click to copy",
+        copyCode: "Copy code",
         copyField: "Copy field name",
         copyEndpoint: "Copy endpoint URL",
         copyText: "Copy text"

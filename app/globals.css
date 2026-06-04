@@ -41,16 +41,21 @@
   --copy-popover-border: #9acbc7;
   --copy-popover-bg: #e9f7f5;
   --copy-popover-text: #05645f;
-  --json-text: #d7e2e8;
-  --json-field: #76e4d4;
-  --json-field-hover: #a7fff2;
-  --json-field-bg: rgb(118 228 212 / 14%);
-  --json-field-bg-strong: rgb(118 228 212 / 22%);
-  --json-string: #f0c674;
-  --json-number: #8ab4f8;
-  --json-boolean: #c8a2ff;
-  --json-null: #ff9b9b;
-  --json-punctuation: #9eb1ba;
+  --json-code-bg: #f7fafc;
+  --json-code-border: #d9e1e7;
+  --json-copy-bg: #ffffff;
+  --json-copy-bg-hover: #e9f7f5;
+  --json-copy-text: #33444d;
+  --json-text: #26343b;
+  --json-field: #087f7a;
+  --json-field-hover: #05645f;
+  --json-field-bg: rgb(8 127 122 / 10%);
+  --json-field-bg-strong: rgb(8 127 122 / 18%);
+  --json-string: #8a5a00;
+  --json-number: #285f9d;
+  --json-boolean: #7a3fb0;
+  --json-null: #a33a32;
+  --json-punctuation: #6b7a82;
   --button-primary-text: #ffffff;
   --shadow: 0 12px 32px rgb(21 38 50 / 8%);
   --radius: 8px;
@@ -110,6 +115,11 @@
   --copy-popover-border: #326e69;
   --copy-popover-bg: #142826;
   --copy-popover-text: #88ded5;
+  --json-code-bg: #0a0f13;
+  --json-code-border: #1f2b32;
+  --json-copy-bg: #101820;
+  --json-copy-bg-hover: #142826;
+  --json-copy-text: #c5d5da;
   --json-text: #c5d5da;
   --json-field: #7ee0d4;
   --json-field-hover: #b9fff7;
@@ -875,6 +885,24 @@ textarea:focus {
   color: var(--accent);
 }
 
+.docs-breadcrumb-external-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+}
+
+.docs-breadcrumb-external-link:hover,
+.docs-breadcrumb-external-link:focus-visible {
+  color: var(--accent-strong);
+  outline: none;
+}
+
+.docs-breadcrumb-external-link:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .docs-breadcrumb-separator {
   color: var(--muted);
 }
@@ -1528,7 +1556,7 @@ textarea:focus {
 
 .toc-list {
   display: grid;
-  gap: 4px;
+  gap: 2px;
 }
 
 .toc-item {
@@ -1742,8 +1770,71 @@ textarea:focus {
   outline: none;
 }
 
-.json-code-block {
+.json-code-shell {
+  position: relative;
+  margin: 1em 0;
+}
+
+.markdown-body .json-code-shell .json-code-block {
+  margin: 0;
+  border: 1px solid var(--json-code-border);
+  background: var(--json-code-bg);
+  padding-right: 48px;
   color: var(--json-text);
+}
+
+.json-code-copy {
+  position: absolute;
+  z-index: 1;
+  top: 8px;
+  right: 8px;
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: var(--json-copy-bg);
+  color: var(--json-copy-text);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.json-code-copy:hover,
+.json-code-copy:focus-visible,
+.json-code-copy-copied {
+  background: var(--json-copy-bg-hover);
+  color: var(--accent-strong);
+  outline: none;
+}
+
+.json-code-copy-copied::after {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  right: 100%;
+  display: inline-grid;
+  box-sizing: border-box;
+  min-width: 58px;
+  min-height: 22px;
+  place-items: center;
+  border: 1px solid var(--copy-popover-border);
+  border-radius: 999px;
+  background: var(--copy-popover-bg);
+  color: var(--copy-popover-text);
+  content: "✓ " attr(aria-label);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0;
+  padding: 0 7px;
+  pointer-events: none;
+  transform: translate(-6px, -50%);
+  white-space: nowrap;
+  animation: json-code-copy-label 1000ms ease-out forwards;
 }
 
 .json-field-name {
@@ -1827,6 +1918,24 @@ textarea:focus {
   100% {
     opacity: 0;
     transform: translate(6px, -50%) scale(1);
+  }
+}
+
+@keyframes json-code-copy-label {
+  0% {
+    opacity: 0;
+    transform: translate(-4px, -50%) scale(0.96);
+  }
+
+  18%,
+  72% {
+    opacity: 1;
+    transform: translate(-6px, -50%) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-6px, -50%) scale(1);
   }
 }
 
