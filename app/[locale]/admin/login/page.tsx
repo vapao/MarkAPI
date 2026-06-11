@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { loginAction } from "@/app/admin/actions";
+import { LoginPasswordField } from "@/components/login-password-field";
 import { SettingsMenu } from "@/components/settings-menu";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { localizedPath } from "@/lib/locales";
@@ -55,10 +56,7 @@ export default async function LoginPage({ params, searchParams }: LoginPageProps
             </div>
           </div>
           {errorMessage ? <p className="form-error">{errorMessage}</p> : null}
-          <label>
-            <span>{t.admin.login.password}</span>
-            <input autoComplete="current-password" autoFocus required type="password" name="password" />
-          </label>
+          <LoginPasswordField label={t.admin.login.password} />
           <button className="button button-primary" type="submit">
             {t.admin.login.submit}
           </button>
